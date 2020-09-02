@@ -5,7 +5,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Case I0</title>
-  <link rel="stylesheet" href="https://thetazero.github.io/style.css">
+  <link rel="stylesheet" href="/style.css">
   <script src="https://www.desmos.com/api/v1.5/calculator.js?apiKey=dcb31709b452b1cf9dc26972add0fda6"></script>
 </head>
 
@@ -27,11 +27,11 @@
     <div id="calculator" style="width:100%; height:min(50vw, 70vh)"></div>
 
   </div>
-  <script src="/wasm_exec.js"></script>
+  <script src="wasm_exec.js"></script>
   <script>
     const go = new Go();
     let mod, inst;
-    WebAssembly.instantiateStreaming(fetch("/i0.wasm"), go.importObject).then(async result => {
+    WebAssembly.instantiateStreaming(fetch("i0.wasm"), go.importObject).then(async result => {
       mod = result.module;
       inst = result.instance;
       await go.run(inst);
