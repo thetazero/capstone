@@ -47,6 +47,7 @@
       console.log(result)
       calculator.setExpression({ id: 'graph1', latex: `f(x)=(${PolynomialString(result['ftop'])})/(${PolynomialString(result['fbot'])})` })
       calculator.setExpression({ id: 'graph2', latex: `g(x)=(${PolynomialString(result['gtop'])})/(${PolynomialString(result['gbot'])})` })
+      calculator.setExpression({ id: 'graph3', latex: `f(x)+g(x)+x/${result['p0']}` })
     }
 
     function PolynomialString(vector) {
@@ -70,6 +71,7 @@
     calculator.updateSettings({
       projectorMode: true,
       invertedColors: true,
+      expressionsCollapsed: true,
     })
     calculator.setMathBounds({
       left: -0.1,

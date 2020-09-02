@@ -31,13 +31,15 @@ func solveJS(this js.Value, args []js.Value) interface{} {
 	for i := 0; i < args[2].Length(); i++ {
 		q = append(q, big.NewRat(int64(args[2].Index(i).Int()), 1))
 	}
-	lambda, f, g := solve(alpha, p, q, debth)
+	lambda, f, g, p0 := solve(alpha, p, q, debth)
 	res := make(map[string]interface{})
 	res["lambda"] = lambda
 	res["ftop"] = f.top.toFloatArr()
 	res["fbot"] = f.bot.toFloatArr()
 	res["gtop"] = g.top.toFloatArr()
 	res["gbot"] = g.bot.toFloatArr()
+	roh0, _ := p0.Float64()
+	res["p0"] = roh0
 	return js.ValueOf(res)
 }
 
@@ -48,7 +50,7 @@ func (r Rational) compute() float64 {
 	return -1
 }
 
-func solve(alpha *big.Rat, p, q Vector, debth int64) (float64, Rational, Rational) {
+func solve(alpha *big.Rat, p, q Vector, debth int64) (float64, Rational, Rational, *big.Rat) {
 	pn := computePN(alpha, p, q, debth)
 	positiveP := pn[debth+1:]
 	negativeP := pn[:debth]
@@ -81,5 +83,5 @@ func solve(alpha *big.Rat, p, q Vector, debth int64) (float64, Rational, Rationa
 	}
 	// fmt.Println(p0)
 	// fmt.Println(equation.toString())
-	return root.Bisection(result, 0.0001, 0, 1000), f, g
+	return root.Bisection(result, 0.0001, 0, 1000), f, g, p0
 }
