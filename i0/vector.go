@@ -105,3 +105,12 @@ func (v Vector) PolynomialMul(w Vector) Vector {
 	}
 	return res
 }
+
+func (v Vector) toFloatArr() []interface{} {
+	x := make([]interface{}, len(v))
+	for i := range x {
+		f, _ := v[i].Float64()
+		x[i] = f
+	}
+	return x
+}

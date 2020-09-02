@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Case I0</title>
+  <link rel="stylesheet" href="https://thetazero.github.io/style.css">
+  <script src="https://www.desmos.com/api/v1.5/calculator.js?apiKey=dcb31709b452b1cf9dc26972add0fda6"></script>
+</head>
+
+<body>
+  <div class="container">
+    <h1>Case I0</h1>
+    <hr>
+    <p>
+      Type in the inputs into the text boxes bellow, for alpha just type in a number. For p and q type in a vector in
+      this form [1, 2]. Debth determines the debth to which the continued fraction is approximated.
+    </p>
+    <p>
+      <input type="text" id="alpha" placeholder="alpha" value="1">
+      <input type="text" id="p" placeholder="p vector" value="[3, 1]">
+      <input type="text" id="q" placeholder="q vector" value="[-1, 2]">
+      <input type="text" id="debth" placeholder="debth" value="10">
+      <input type="button" value="solve" onclick="solveBtn()">
+    </p>
+    <div id="calculator" style="width:100%; height:min(50vw, 70vh)"></div>
+
+  </div>
+  <script src="/wasm_exec.js"></script>
+  <script>
+    const go = new Go();
+    let mod, inst;
+    WebAssembly.instantiateStreaming(fetch("/i0.wasm"), go.importObject).then(async result => {
+      mod = result.module;
+      inst = result.instance;
+      await go.run(inst);
+    });
+  </script>
+  <script>
+    function solveBtn() {
+      let alpha = parseFloat(document.querySelector("#alpha").value)
+      let p = parseVector(document.querySelector("#p").value)
+      let q = parseVector(document.querySelector("#q").value)
+      let debth = parseInt(document.querySelector("#debth").value)
+      let result = solve(alpha, p, q, debth)
+      console.log(result)
+      calculator.setExpression({ id: 'graph1', latex: `f(x)=(${PolynomialString(result['ftop'])})/(${PolynomialString(result['fbot'])})` })
+      calculator.setExpression({ id: 'graph2', latex: `g(x)=(${PolynomialString(result['gtop'])})/(${PolynomialString(result['gbot'])})` })
+    }
+
+    function PolynomialString(vector) {
+      let poly = ""
+      for (let i = 0; i < vector.length; i++) {
+        poly += `${vector[i]}x^{${i}}`
+        if (i != vector.length - 1) {
+          poly += "+"
+        }
+      }
+      return poly
+    }
+
+    function parseVector(text) {
+      text = text.replace(/</g, "[").replace(/>/, "]").replace(/\(/g, "[").replace(/\)/g, "]")
+      return JSON.parse(text)
+    }
+
+    const calcElem = document.getElementById('calculator');
+    const calculator = Desmos.GraphingCalculator(calcElem);
+    calculator.updateSettings({
+      projectorMode: true,
+      invertedColors: true,
+    })
+    calculator.setMathBounds({
+      left: -0.1,
+      right: 5,
+      bottom: -0.1,
+      top: 1.2,
+    })
+    // calculator.setExpression({ id: 'graph1', latex: 'y=x^2' });
+  </script>
+</body>
+
+</html>

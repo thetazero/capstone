@@ -4,14 +4,41 @@ import (
 	"fmt"
 	"math"
 	"math/big"
+	"syscall/js"
 
 	"github.com/DzananGanic/numericalgo/root"
 )
 
 func main() {
-	lambda := solve(big.NewRat(1, 1), Vector{big.NewRat(3, 1), big.NewRat(1, 1)}, Vector{big.NewRat(-1, 1), big.NewRat(2, 1)})
+	// lambda := solve(big.NewRat(1, 1), Vector{big.NewRat(3, 1), big.NewRat(1, 1)}, Vector{big.NewRat(-1, 1), big.NewRat(2, 1)})
 	// fmt.Println(RationalFromContinued(Vector{1, 1, 1}))
-	fmt.Println(lambda)
+	// fmt.Println(lambda)
+
+	//wasm stuff:
+	c := make(chan struct{}, 0)
+	js.Global().Set("solve", js.FuncOf(solveJS))
+	<-c
+}
+
+func solveJS(this js.Value, args []js.Value) interface{} {
+	alpha := big.NewRat(int64(args[0].Int()), 1)
+	p := Vector{}
+	q := Vector{}
+	debth := int64(args[3].Int())
+	for i := 0; i < args[1].Length(); i++ {
+		p = append(p, big.NewRat(int64(args[1].Index(i).Int()), 1))
+	}
+	for i := 0; i < args[2].Length(); i++ {
+		q = append(q, big.NewRat(int64(args[2].Index(i).Int()), 1))
+	}
+	lambda, f, g := solve(alpha, p, q, debth)
+	res := make(map[string]interface{})
+	res["lambda"] = lambda
+	res["ftop"] = f.top.toFloatArr()
+	res["fbot"] = f.bot.toFloatArr()
+	res["gtop"] = g.top.toFloatArr()
+	res["gbot"] = g.bot.toFloatArr()
+	return js.ValueOf(res)
 }
 
 //Continued ;
@@ -21,11 +48,10 @@ func (r Rational) compute() float64 {
 	return -1
 }
 
-func solve(alpha *big.Rat, p, q Vector) float64 {
-	cap := int64(10)
-	pn := computePN(alpha, p, q, cap)
-	positiveP := pn[cap+1:]
-	negativeP := pn[:cap]
+func solve(alpha *big.Rat, p, q Vector, debth int64) (float64, Rational, Rational) {
+	pn := computePN(alpha, p, q, debth)
+	positiveP := pn[debth+1:]
+	negativeP := pn[:debth]
 	for i := 0; i < len(negativeP)/2; i++ {
 		negativeP[i], negativeP[len(negativeP)-1-i] = negativeP[len(negativeP)-1-i], negativeP[i]
 	}
@@ -37,11 +63,13 @@ func solve(alpha *big.Rat, p, q Vector) float64 {
 	}
 	positiveP = append(Vector{big.NewRat(0, 1)}, positiveP...)
 	negativeP = append(Vector{big.NewRat(0, 1)}, negativeP...)
-	p0 := pn[cap]
+	p0 := pn[debth]
 	f := RationalFromContinued(positiveP)
 	// fmt.Println(f)
 	g := RationalFromContinued(negativeP)
+	fmt.Println(f.top, g.bot, g.top, g.bot)
 	equation := f.top.PolynomialMul(g.bot).Add(g.top.PolynomialMul(f.bot)).Add(Vector{big.NewRat(0, 1), new(big.Rat).Inv(p0)}.PolynomialMul(g.bot).PolynomialMul(f.bot))
+	fmt.Println(f.top, g.bot, g.top, g.bot)
 	var result = func(x float64) float64 {
 		res := 0.0
 		for i := range equation {
@@ -53,5 +81,5 @@ func solve(alpha *big.Rat, p, q Vector) float64 {
 	}
 	// fmt.Println(p0)
 	// fmt.Println(equation.toString())
-	return root.Bisection(result, 0.0001, 0, 1000)
+	return root.Bisection(result, 0.0001, 0, 1000), f, g
 }
