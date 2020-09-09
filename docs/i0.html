@@ -5,7 +5,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Case I0</title>
-  <link rel="stylesheet" href="/style.css">
+  <link rel="stylesheet" href="https://thetazero.github.io/style.css">
   <script src="https://www.desmos.com/api/v1.5/calculator.js?apiKey=dcb31709b452b1cf9dc26972add0fda6"></script>
 </head>
 
@@ -45,9 +45,20 @@
       let debth = parseInt(document.querySelector("#debth").value)
       let result = solve(alpha, p, q, debth)
       console.log(result)
-      calculator.setExpression({ id: 'graph1', latex: `f(x)=(${PolynomialString(result['ftop'])})/(${PolynomialString(result['fbot'])})` })
-      calculator.setExpression({ id: 'graph2', latex: `g(x)=(${PolynomialString(result['gtop'])})/(${PolynomialString(result['gbot'])})` })
-      calculator.setExpression({ id: 'graph3', latex: `f(x)+g(x)+x/${result['p0']}` })
+
+      let fbot = PolynomialString(result['fbot'])
+      let ftop = PolynomialString(result['ftop'])
+      let fbotplus1 = PolynomialString(result['fbotplus1'])
+
+      let gbot = PolynomialString(result['gbot'])
+      let gtop = PolynomialString(result['gtop'])
+      let gbotplus1 = PolynomialString(result['gbotplus1'])
+
+      calculator.setExpression({ id: 'graph1', latex: `f(x)=(${ftop})/(${fbot})`, color: "#2d70b3" })
+      calculator.setExpression({ id: 'f_error', latex: `\\left|y-\\frac{${ftop}}{${fbot}}\\right|<\\frac{1}{(${fbot})(${fbotplus1})}`, color: "#3d80c3" })
+      calculator.setExpression({ id: 'graph2', latex: `g(x)=(${gtop}) /(${gbot})`, color: "#fa7e19" })
+      calculator.setExpression({ id: 'g_error', latex: `\\left|y-\\frac{${gtop}}{${gbot}}\\right|<\\frac{1}{(${gbot})(${gbotplus1})}`, color: "ff8d19" })
+      calculator.setExpression({ id: 'graph3', latex: `f(x)+g(x)+x/${result['p0']}`, color: "#000000" })
     }
 
     function PolynomialString(vector) {
@@ -79,7 +90,7 @@
       bottom: -0.1,
       top: 1.2,
     })
-    // calculator.setExpression({ id: 'graph1', latex: 'y=x^2' });
+    calculator.setDefaultState(calculator.getState())
   </script>
 </body>
 

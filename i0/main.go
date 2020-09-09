@@ -10,8 +10,8 @@ import (
 )
 
 func main() {
-	// lambda := solve(big.NewRat(1, 1), Vector{big.NewRat(3, 1), big.NewRat(1, 1)}, Vector{big.NewRat(-1, 1), big.NewRat(2, 1)})
-	// fmt.Println(RationalFromContinued(Vector{1, 1, 1}))
+	// lambda, f, g, _, _, p0 := solve(big.NewRat(1, 1), Vector{big.NewRat(3, 1), big.NewRat(1, 1)}, Vector{big.NewRat(-1, 1), big.NewRat(2, 1)}, 10)
+	// fmt.Println(f, g, p0)
 	// fmt.Println(lambda)
 
 	//wasm stuff:
@@ -31,13 +31,15 @@ func solveJS(this js.Value, args []js.Value) interface{} {
 	for i := 0; i < args[2].Length(); i++ {
 		q = append(q, big.NewRat(int64(args[2].Index(i).Int()), 1))
 	}
-	lambda, f, g, p0 := solve(alpha, p, q, debth)
+	lambda, f, g, fbotplus1, gbotplus1, p0 := solve(alpha, p, q, debth)
 	res := make(map[string]interface{})
 	res["lambda"] = lambda
 	res["ftop"] = f.top.toFloatArr()
 	res["fbot"] = f.bot.toFloatArr()
 	res["gtop"] = g.top.toFloatArr()
 	res["gbot"] = g.bot.toFloatArr()
+	res["fbotplus1"] = fbotplus1.toFloatArr()
+	res["gbotplus1"] = gbotplus1.toFloatArr()
 	roh0, _ := p0.Float64()
 	res["p0"] = roh0
 	return js.ValueOf(res)
@@ -50,7 +52,8 @@ func (r Rational) compute() float64 {
 	return -1
 }
 
-func solve(alpha *big.Rat, p, q Vector, debth int64) (float64, Rational, Rational, *big.Rat) {
+func solve(alpha *big.Rat, p, q Vector, debth int64) (float64, Rational, Rational, Vector, Vector, *big.Rat) {
+	debth++
 	pn := computePN(alpha, p, q, debth)
 	positiveP := pn[debth+1:]
 	negativeP := pn[:debth]
@@ -66,9 +69,9 @@ func solve(alpha *big.Rat, p, q Vector, debth int64) (float64, Rational, Rationa
 	positiveP = append(Vector{big.NewRat(0, 1)}, positiveP...)
 	negativeP = append(Vector{big.NewRat(0, 1)}, negativeP...)
 	p0 := pn[debth]
-	f := RationalFromContinued(positiveP)
+	fp1, f := RationalFromContinued(positiveP)
 	// fmt.Println(f)
-	g := RationalFromContinued(negativeP)
+	gp1, g := RationalFromContinued(negativeP)
 	fmt.Println(f.top, g.bot, g.top, g.bot)
 	equation := f.top.PolynomialMul(g.bot).Add(g.top.PolynomialMul(f.bot)).Add(Vector{big.NewRat(0, 1), new(big.Rat).Inv(p0)}.PolynomialMul(g.bot).PolynomialMul(f.bot))
 	fmt.Println(f.top, g.bot, g.top, g.bot)
@@ -83,5 +86,5 @@ func solve(alpha *big.Rat, p, q Vector, debth int64) (float64, Rational, Rationa
 	}
 	// fmt.Println(p0)
 	// fmt.Println(equation.toString())
-	return root.Bisection(result, 0.0001, 0, 1000), f, g, p0
+	return root.Bisection(result, 0.0001, 0, 1000), f, g, fp1.top, gp1.top, p0
 }

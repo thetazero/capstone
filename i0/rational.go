@@ -10,7 +10,7 @@ type Rational struct {
 }
 
 //RationalFromContinued returns the rational function equivalent to a fininte contiuned fraction.
-func RationalFromContinued(a Vector) Rational {
+func RationalFromContinued(a Vector) (Rational, Rational) {
 	r := Rational{}
 	// p/q
 	pm1 := Vector{big.NewRat(1, 1)}
@@ -24,7 +24,7 @@ func RationalFromContinued(a Vector) Rational {
 		qm1, qm2 = r.bot, qm1
 		// fmt.Println(r.top.toString(), r.bot.toString())
 	}
-	return r
+	return r, Rational{top: pm2, bot: qm2}
 }
 
 func (r Rational) equals(a Rational) bool {

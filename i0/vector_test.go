@@ -103,6 +103,17 @@ func TestVector_Add(t *testing.T) {
 			MakeIntVector([]int64{2, 3, 4}),
 			MakeIntVector([]int64{3, 5, 7}),
 		},
+		{
+			MakeIntVector([]int64{1, 0}),
+			MakeIntVector([]int64{}),
+			MakeIntVector([]int64{1, 0}),
+		},
+		{
+
+			MakeIntVector([]int64{0}),
+			MakeIntVector([]int64{3, 0}),
+			MakeIntVector([]int64{3, 0}),
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.a.toString()+"+"+tt.b.toString(), func(t *testing.T) {

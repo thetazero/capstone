@@ -32,7 +32,7 @@ func TestRationalFromContinued(t *testing.T) {
 	for _, tt := range tests {
 		testname := tt.input.toString()
 		t.Run(testname, func(t *testing.T) {
-			ans := RationalFromContinued(tt.input)
+			ans, _ := RationalFromContinued(tt.input)
 			if !ans.equals(tt.want) {
 				t.Errorf("got %s/%s, want %s/%s", ans.top.toString(), ans.bot.toString(), tt.want.top.toString(), tt.want.bot.toString())
 			}
