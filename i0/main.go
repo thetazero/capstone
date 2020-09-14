@@ -2,48 +2,44 @@ package main
 
 import (
 	"fmt"
-	"math"
 	"math/big"
-	"syscall/js"
-
-	"github.com/DzananGanic/numericalgo/root"
 )
 
 func main() {
-	// lambda, f, g, _, _, p0 := solve(big.NewRat(1, 1), Vector{big.NewRat(3, 1), big.NewRat(1, 1)}, Vector{big.NewRat(-1, 1), big.NewRat(2, 1)}, 10)
-	// fmt.Println(f, g, p0)
-	// fmt.Println(lambda)
+	lambda, f, g, _, _, p0 := solve(big.NewRat(1, 1), Vector{big.NewRat(3, 1), big.NewRat(1, 1)}, Vector{big.NewRat(-1, 1), big.NewRat(2, 1)}, 10)
+	fmt.Println(f, g, p0)
+	fmt.Println(lambda)
 
 	//wasm stuff:
-	c := make(chan struct{}, 0)
-	js.Global().Set("solve", js.FuncOf(solveJS))
-	<-c
+	// c := make(chan struct{}, 0)
+	// js.Global().Set("solve", js.FuncOf(solveJS))
+	// <-c
 }
 
-func solveJS(this js.Value, args []js.Value) interface{} {
-	alpha := big.NewRat(int64(args[0].Int()), 1)
-	p := Vector{}
-	q := Vector{}
-	debth := int64(args[3].Int())
-	for i := 0; i < args[1].Length(); i++ {
-		p = append(p, big.NewRat(int64(args[1].Index(i).Int()), 1))
-	}
-	for i := 0; i < args[2].Length(); i++ {
-		q = append(q, big.NewRat(int64(args[2].Index(i).Int()), 1))
-	}
-	lambda, f, g, fbotplus1, gbotplus1, p0 := solve(alpha, p, q, debth)
-	res := make(map[string]interface{})
-	res["lambda"] = lambda
-	res["ftop"] = f.top.toFloatArr()
-	res["fbot"] = f.bot.toFloatArr()
-	res["gtop"] = g.top.toFloatArr()
-	res["gbot"] = g.bot.toFloatArr()
-	res["fbotplus1"] = fbotplus1.toFloatArr()
-	res["gbotplus1"] = gbotplus1.toFloatArr()
-	roh0, _ := p0.Float64()
-	res["p0"] = roh0
-	return js.ValueOf(res)
-}
+// func solveJS(this js.Value, args []js.Value) interface{} {
+// 	alpha := big.NewRat(int64(args[0].Int()), 1)
+// 	p := Vector{}
+// 	q := Vector{}
+// 	debth := int64(args[3].Int())
+// 	for i := 0; i < args[1].Length(); i++ {
+// 		p = append(p, big.NewRat(int64(args[1].Index(i).Int()), 1))
+// 	}
+// 	for i := 0; i < args[2].Length(); i++ {
+// 		q = append(q, big.NewRat(int64(args[2].Index(i).Int()), 1))
+// 	}
+// 	lambda, f, g, fbotplus1, gbotplus1, p0 := solve(alpha, p, q, debth)
+// 	res := make(map[string]interface{})
+// 	res["lambda"] = lambda
+// 	res["ftop"] = f.top.toFloatArr()
+// 	res["fbot"] = f.bot.toFloatArr()
+// 	res["gtop"] = g.top.toFloatArr()
+// 	res["gbot"] = g.bot.toFloatArr()
+// 	res["fbotplus1"] = fbotplus1.toFloatArr()
+// 	res["gbotplus1"] = gbotplus1.toFloatArr()
+// 	roh0, _ := p0.Float64()
+// 	res["p0"] = roh0
+// 	return js.ValueOf(res)
+// }
 
 //Continued ;
 type Continued []float64
@@ -72,19 +68,17 @@ func solve(alpha *big.Rat, p, q Vector, debth int64) (float64, Rational, Rationa
 	fp1, f := RationalFromContinued(positiveP)
 	// fmt.Println(f)
 	gp1, g := RationalFromContinued(negativeP)
-	fmt.Println(f.top, g.bot, g.top, g.bot)
-	equation := f.top.PolynomialMul(g.bot).Add(g.top.PolynomialMul(f.bot)).Add(Vector{big.NewRat(0, 1), new(big.Rat).Inv(p0)}.PolynomialMul(g.bot).PolynomialMul(f.bot))
-	fmt.Println(f.top, g.bot, g.top, g.bot)
-	var result = func(x float64) float64 {
-		res := 0.0
-		for i := range equation {
-			f, _ := equation[i].Float64()
-			res += math.Pow(x, float64(i)) * f
+	// equation := f.top.PolynomialMul(g.bot).Add(g.top.PolynomialMul(f.bot)).Add(Vector{big.NewRat(0, 1), new(big.Rat).Inv(p0)}.PolynomialMul(g.bot).PolynomialMul(f.bot))
+	// var result = func(x float64) float64 {
+	// 	res := 0.0
+	// 	for i := range equation {
+	// 		f, _ := equation[i].Float64()
+	// 		res += math.Pow(x, float64(i)) * f
 
-		}
-		return res
-	}
+	// 	}
+	// 	return res
+	// }
 	// fmt.Println(p0)
 	// fmt.Println(equation.toString())
-	return root.Bisection(result, 0.0001, 0, 1000), f, g, fp1.top, gp1.top, p0
+	return -1, f, g, fp1.top, gp1.top, p0
 }
