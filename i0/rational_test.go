@@ -2,28 +2,29 @@ package main
 
 import (
 	"math/big"
+	"reflect"
 	"testing"
 )
 
 func TestRationalFromContinued(t *testing.T) {
 	var tests = []struct {
 		input Vector
-		want  Rational
+		want  RationalFunc
 	}{
 		{
-			Vector{RInt(1), RInt(2), RInt(3)}, Rational{
+			Vector{RInt(1), RInt(2), RInt(3)}, RationalFunc{
 				top: Vector{RInt(0), RInt(4), RInt(0), RInt(6)},
 				bot: Vector{RInt(1), RInt(0), RInt(6), RInt(0)},
 			},
 		},
 		{
-			Vector{RInt(0), RInt(4), RInt(3), RInt(2)}, Rational{
+			Vector{RInt(0), RInt(4), RInt(3), RInt(2)}, RationalFunc{
 				top: Vector{RInt(1), RInt(0), RInt(6), RInt(0), RInt(0)},
 				bot: Vector{RInt(0), RInt(6), RInt(0), RInt(24), RInt(0)},
 			},
 		},
 		{
-			Vector{RInt(0), RInt(1)}, Rational{
+			Vector{RInt(0), RInt(1)}, RationalFunc{
 				top: Vector{RInt(1), RInt(0), RInt(0)},
 				bot: Vector{RInt(0), RInt(1), RInt(0)},
 			},
@@ -42,4 +43,26 @@ func TestRationalFromContinued(t *testing.T) {
 
 func RInt(a int64) *big.Rat {
 	return big.NewRat(a, 1)
+}
+
+func TestRationalFromContinuedVector(t *testing.T) {
+	tests := []struct {
+		name  string
+		a     []Vector
+		want  RationalFunc
+		want1 RationalFunc
+	}{
+		// TODO: Add test cases.
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			got, got1 := RationalFromContinuedVector(tt.a)
+			if !reflect.DeepEqual(got, tt.want) {
+				t.Errorf("RationalFromContinuedVector() got = %v, want %v", got, tt.want)
+			}
+			if !reflect.DeepEqual(got1, tt.want1) {
+				t.Errorf("RationalFromContinuedVector() got1 = %v, want %v", got1, tt.want1)
+			}
+		})
+	}
 }

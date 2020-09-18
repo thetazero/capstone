@@ -4,6 +4,9 @@
 -  Read more continued fractions.
 - Try to make k=1000 (depth) and see convergence
 - Find errors
+- Faster computations
+- make Figure 1 like visualization for p, q maybe make them drag able?
+- Naiver Stokes case
 ## Explanation
 
 Compute roh n using 2.7
@@ -18,6 +21,6 @@ Friday 10am EST
 Wednesday 9:30am, 7pm EST
 
 ## Actually do things
-- Monday September 14th 8:30am PST, 11:30am EST
+- Monday September 28th 8:30am PST, 11:30am EST
 - Make graphs of f, g (with error bounds)
 - Solve the equation

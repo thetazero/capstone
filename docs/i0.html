@@ -6,27 +6,36 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Case I0</title>
   <link rel="stylesheet" href="https://thetazero.github.io/style.css">
-  <script src="https://www.desmos.com/api/v1.5/calculator.js?apiKey=dcb31709b452b1cf9dc26972add0fda6"></script>
+  <style>
+    .bad {
+      color: hsl(0, 100%, 70%);
+    }
+  </style>
 </head>
 
 <body>
   <div class="container">
     <h1>Case I0</h1>
     <hr>
+    <span class="bad" id="loading">loading…</span>
     <p>
       Type in the inputs into the text boxes bellow, for alpha just type in a number. For p and q type in a vector in
       this form [1, 2]. Debth determines the debth to which the continued fraction is approximated.
     </p>
     <p>
-      <input type="text" id="alpha" placeholder="alpha" value="1">
-      <input type="text" id="p" placeholder="p vector" value="[3, 1]">
-      <input type="text" id="q" placeholder="q vector" value="[-1, 2]">
-      <input type="text" id="debth" placeholder="debth" value="10">
+      <b>α:</b><input type="text" id="alpha-input" placeholder="alpha" value="1">
+      <b>p:</b><input type="text" id="p" placeholder="p vector" value="[3, 1]" onkeyup="setPQ()">
+      <b>q:</b><input type="text" id="q" placeholder="q vector" value="[-1, 2]" onkeyup="setPQ()">
+      <b>debth:</b><input type="text" id="debth" placeholder="debth" value="10">
       <input type="button" value="solve" onclick="solveBtn()">
     </p>
+    <div id="vector-controls">
+
+    </div>
     <div id="calculator" style="width:100%; height:min(50vw, 70vh)"></div>
 
   </div>
+  <script src="https://www.desmos.com/api/v1.5/calculator.js?apiKey=dcb31709b452b1cf9dc26972add0fda6"></script>
   <script src="wasm_exec.js"></script>
   <script>
     const go = new Go();
@@ -38,10 +47,18 @@
     });
   </script>
   <script>
+    let p = [3, 1];
+    let q = [-1, 2];
+
+    function setPQ() {
+      p = parseVector(document.querySelector("#p").value)
+      q = parseVector(document.querySelector("#q").value)
+    }
+
     function solveBtn() {
-      let alpha = parseFloat(document.querySelector("#alpha").value)
-      let p = parseVector(document.querySelector("#p").value)
-      let q = parseVector(document.querySelector("#q").value)
+      let alpha = parseFloat(document.querySelector("#alpha-input").value)
+      p = parseVector(document.querySelector("#p").value)
+      q = parseVector(document.querySelector("#q").value)
       let debth = parseInt(document.querySelector("#debth").value)
       let result = solve(alpha, p, q, debth)
       console.log(result)
@@ -92,6 +109,8 @@
     })
     calculator.setDefaultState(calculator.getState())
   </script>
+  <script src="https://cdn.jsdelivr.net/npm/p5@1.1.9/lib/p5.js"></script>
+  <script src="vectorControls.js"></script>
 </body>
 
 </html>
