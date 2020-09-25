@@ -10,9 +10,9 @@ func main() {
 	// fmt.Println(f, g, p0)
 	// fmt.Println(lambda)
 
-	// c := make(chan struct{}, 0)
-	// js.Global().Set("solve", js.FuncOf(solveJS))
-	// <-c
+	c := make(chan struct{}, 0)
+	js.Global().Set("solve", js.FuncOf(solveJS))
+	<-c
 }
 
 func solveJS(this js.Value, args []js.Value) interface{} {

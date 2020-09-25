@@ -6,8 +6,9 @@ window.onload = () => {
 
 let vSize = 256
 function setup() {
-  let cnv = createCanvas(vSize, vSize);
+  let cnv = createCanvas(vSize, vSize)
   cnv.parent('vector-controls')
+  noLoop()
 }
 
 function draw() {

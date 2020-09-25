@@ -114,3 +114,9 @@ func (v Vector) toFloatArr() []interface{} {
 	}
 	return x
 }
+
+func (v *Vector) reverse() {
+	for i := 0; i < len(*v)/2; i++ {
+		(*v)[i], (*v)[len(*v)-1-i] = (*v)[len(*v)-1-i], (*v)[i]
+	}
+}
