@@ -12,6 +12,7 @@ func main() {
 
 	c := make(chan struct{}, 0)
 	js.Global().Set("solve", js.FuncOf(solveJS))
+	js.Global().Set("solve_ns", js.FuncOf(solve_nsJS))
 	<-c
 }
 
@@ -37,6 +38,29 @@ func solveJS(this js.Value, args []js.Value) interface{} {
 	res["gbotplus1"] = gbotplus1.toFloatArr()
 	roh0, _ := p0.Float64()
 	res["p0"] = roh0
+	return js.ValueOf(res)
+}
+
+func solve_nsJS(this js.Value, args []js.Value) interface{} {
+	ν := big.NewRat(int64(args[0].Int()), 1)
+	p := Vector{}
+	q := Vector{}
+	debth := int64(args[3].Int())
+	for i := 0; i < args[1].Length(); i++ {
+		p = append(p, big.NewRat(int64(args[1].Index(i).Int()), 1))
+	}
+	for i := 0; i < args[2].Length(); i++ {
+		q = append(q, big.NewRat(int64(args[2].Index(i).Int()), 1))
+	}
+	f, g, fbotplus1, gbotplus1, p0 := solve_ns(ν, p, q, debth)
+	res := make(map[string]interface{})
+	res["ftop"] = f.top.toFloatArr()
+	res["fbot"] = f.bot.toFloatArr()
+	res["gtop"] = g.top.toFloatArr()
+	res["gbot"] = g.bot.toFloatArr()
+	res["p0"] = p0.toFloatArr()
+	res["fbotplus1"] = fbotplus1.toFloatArr()
+	res["gbotplus1"] = gbotplus1.toFloatArr()
 	return js.ValueOf(res)
 }
 
@@ -79,5 +103,5 @@ func solve(alpha *big.Rat, p, q Vector, debth int64) (float64, RationalFunc, Rat
 	// }
 	// fmt.Println(p0)
 	// fmt.Println(equation.toString())
-	return -1, f, g, fp1.top, gp1.top, p0
+	return -1, f, g, fp1.bot, gp1.bot, p0
 }

@@ -93,8 +93,12 @@ func RationalFromContinuedVector(a []Vector) (RationalFunc, RationalFunc) {
 	qm1 := Vector{big.NewRat(0, 1)}
 	qm2 := Vector{big.NewRat(1, 1)}
 	for i := range a[0] {
-		r.top = pm1.PolynomialMul(Vector{a[0][i], a[1][i]}).ShiftRight().Add(pm2)
-		r.bot = qm1.PolynomialMul(Vector{a[0][i], a[1][i]}).ShiftRight().Add(qm2)
+		x := make(Vector, len(a))
+		for j := range a {
+			x[j] = new(big.Rat).Set(a[j][i])
+		}
+		r.top = pm1.PolynomialMul(x).Add(pm2)
+		r.bot = qm1.PolynomialMul(x).Add(qm2)
 		pm1, pm2 = r.top, pm1
 		qm1, qm2 = r.bot, qm1
 		// fmt.Println(r.top.toString(), r.bot.toString())

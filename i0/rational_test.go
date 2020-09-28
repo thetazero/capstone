@@ -2,7 +2,6 @@ package main
 
 import (
 	"math/big"
-	"reflect"
 	"testing"
 )
 
@@ -75,16 +74,59 @@ func TestRationalFromContinuedVector(t *testing.T) {
 		want  RationalFunc
 		want1 RationalFunc
 	}{
-		// TODO: Add test cases.
+		{
+			"test0",
+			[]Vector{
+				MakeIntVector([]int64{1, 3, 5, 7}),
+				MakeIntVector([]int64{1, 2, 4, 6}),
+			},
+			RationalFunc{
+				top: MakeIntVector([]int64{151, 425, 464, 236, 48}),
+				bot: MakeIntVector([]int64{115, 252, 188, 48, 0}),
+			},
+			RationalFunc{
+				top: MakeIntVector([]int64{21, 42, 30, 8}),
+				bot: MakeIntVector([]int64{16, 22, 8, 0}),
+			},
+		},
+		{
+			"test1",
+			[]Vector{
+				MakeIntVector([]int64{1, 1}),
+				MakeIntVector([]int64{1, 1}),
+			},
+			RationalFunc{
+				top: MakeIntVector([]int64{2, 2, 1}),
+				bot: MakeIntVector([]int64{1, 1, 0}),
+			},
+			RationalFunc{
+				top: MakeIntVector([]int64{1, 1}),
+				bot: MakeIntVector([]int64{1, 0}),
+			},
+		}, {
+			"test2",
+			[]Vector{
+				MakeIntVector([]int64{1, 3}),
+				MakeIntVector([]int64{2, 4}),
+			},
+			RationalFunc{
+				top: MakeIntVector([]int64{4, 10, 8}),
+				bot: MakeIntVector([]int64{3, 4, 0}),
+			},
+			RationalFunc{
+				top: MakeIntVector([]int64{1, 2}),
+				bot: MakeIntVector([]int64{1, 0}),
+			},
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			got, got1 := RationalFromContinuedVector(tt.a)
-			if !reflect.DeepEqual(got, tt.want) {
-				t.Errorf("RationalFromContinuedVector() got = %v, want %v", got, tt.want)
+			if !got.equals(tt.want) {
+				t.Errorf("RationalFromContinuedVector() got = %v/%v, want %v/%v", got.top, got.bot, tt.want.top, tt.want.bot)
 			}
-			if !reflect.DeepEqual(got1, tt.want1) {
-				t.Errorf("RationalFromContinuedVector() got1 = %v, want %v", got1, tt.want1)
+			if !got1.equals(tt.want1) {
+				t.Errorf("RationalFromContinuedVector() got1 = %v/%v, want %v/%v", got1.top, got1.bot, tt.want1.top, tt.want1.bot)
 			}
 		})
 	}
