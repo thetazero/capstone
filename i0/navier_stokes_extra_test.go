@@ -9,7 +9,7 @@ func Test_ns_pn(t *testing.T) {
 	tests := []struct {
 		name  string
 		p, q  Vector
-		debth int
+		debth int64
 		want  Vector
 	}{
 		{

@@ -7,6 +7,10 @@
 - Faster computations
 - make Figure 1 like visualization for p, q maybe make them drag able?
 - Naiver Stokes case
+- Theorem 2.9 original paper, cases I+, I-
+- Allow entering of margin of error for solution, instead of debth input.
+- Go through notes page
+- Learn argument principle
 ## Explanation
 
 Compute roh n using 2.7

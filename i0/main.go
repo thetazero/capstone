@@ -6,8 +6,8 @@ import (
 )
 
 func main() {
-	// lambda, f, g, _, _, p0 := solve(big.NewRat(1, 1), Vector{big.NewRat(3, 1), big.NewRat(1, 1)}, Vector{big.NewRat(-1, 1), big.NewRat(2, 1)}, 10)
-	// fmt.Println(f, g, p0)
+	// lambda, f, g, _, _, p0, c := solve(big.NewRat(1, 1), Vector{big.NewRat(3, 1), big.NewRat(1, 1)}, Vector{big.NewRat(-1, 1), big.NewRat(2, 1)}, 10)
+	// fmt.Println(f, g, p0, c)
 	// fmt.Println(lambda)
 
 	c := make(chan struct{}, 0)
@@ -27,17 +27,29 @@ func solveJS(this js.Value, args []js.Value) interface{} {
 	for i := 0; i < args[2].Length(); i++ {
 		q = append(q, big.NewRat(int64(args[2].Index(i).Int()), 1))
 	}
-	lambda, f, g, fbotplus1, gbotplus1, p0 := solve(alpha, p, q, debth)
+	lambda, f, g, fbotplus1, gbotplus1, p0, pCase := solve(alpha, p, q, debth)
 	res := make(map[string]interface{})
+	res["case"] = pCase
 	res["lambda"] = lambda
-	res["ftop"] = f.top.toFloatArr()
-	res["fbot"] = f.bot.toFloatArr()
-	res["gtop"] = g.top.toFloatArr()
-	res["gbot"] = g.bot.toFloatArr()
-	res["fbotplus1"] = fbotplus1.toFloatArr()
-	res["gbotplus1"] = gbotplus1.toFloatArr()
-	roh0, _ := p0.Float64()
-	res["p0"] = roh0
+	rho0, _ := p0.Float64()
+	res["p0"] = rho0
+	switch pCase {
+	case "i0":
+		res["ftop"] = f.top.toFloatArr()
+		res["fbot"] = f.bot.toFloatArr()
+		res["gtop"] = g.top.toFloatArr()
+		res["gbot"] = g.bot.toFloatArr()
+		res["fbotplus1"] = fbotplus1.toFloatArr()
+		res["gbotplus1"] = gbotplus1.toFloatArr()
+	case "i+":
+		res["gtop"] = g.top.toFloatArr()
+		res["gbot"] = g.bot.toFloatArr()
+		res["gbotplus1"] = gbotplus1.toFloatArr()
+	case "i-":
+		res["ftop"] = f.top.toFloatArr()
+		res["fbot"] = f.bot.toFloatArr()
+		res["fbotplus1"] = fbotplus1.toFloatArr()
+	}
 	return js.ValueOf(res)
 }
 
@@ -52,8 +64,9 @@ func solve_nsJS(this js.Value, args []js.Value) interface{} {
 	for i := 0; i < args[2].Length(); i++ {
 		q = append(q, big.NewRat(int64(args[2].Index(i).Int()), 1))
 	}
-	f, g, fbotplus1, gbotplus1, p0 := solve_ns(ν, p, q, debth)
+	f, g, fbotplus1, gbotplus1, p0, pCase := solve_ns(ν, p, q, debth)
 	res := make(map[string]interface{})
+	res["case"] = pCase
 	res["ftop"] = f.top.toFloatArr()
 	res["fbot"] = f.bot.toFloatArr()
 	res["gtop"] = g.top.toFloatArr()
@@ -71,37 +84,67 @@ func (r RationalFunc) compute() float64 {
 	return -1
 }
 
-func solve(alpha *big.Rat, p, q Vector, debth int64) (float64, RationalFunc, RationalFunc, Vector, Vector, *big.Rat) {
-	debth++
-	pn := computePN(alpha, p, q, debth)
-	positiveP := pn[debth+1:]
-	negativeP := pn[:debth]
-	for i := 0; i < len(negativeP)/2; i++ {
-		negativeP[i], negativeP[len(negativeP)-1-i] = negativeP[len(negativeP)-1-i], negativeP[i]
+func solve(alpha *big.Rat, p, q Vector, debth int64) (float64, RationalFunc, RationalFunc, Vector, Vector, *big.Rat, string) {
+	c := getCase(p, q)
+	if c == "i0" {
+		debth++
+		pn := computePN(alpha, p, q, debth)
+		positiveP := pn[debth+1:]
+		negativeP := pn[:debth]
+		for i := 0; i < len(negativeP)/2; i++ {
+			negativeP[i], negativeP[len(negativeP)-1-i] = negativeP[len(negativeP)-1-i], negativeP[i]
+		}
+		for i := range positiveP {
+			positiveP[i].Inv(positiveP[i])
+			negativeP[i].Inv(negativeP[i])
+		}
+		positiveP = append(Vector{big.NewRat(0, 1)}, positiveP...)
+		negativeP = append(Vector{big.NewRat(0, 1)}, negativeP...)
+		p0 := pn[debth]
+		fp1, f := RationalFromContinued(positiveP)
+		gp1, g := RationalFromContinued(negativeP)
+		return -1, f, g, fp1.bot, gp1.bot, p0, c
+	} else if c == "i+" {
+		debth++
+		pn := computePN(alpha, p, q, debth)
+		negativeP := pn[:debth]
+		for i := 0; i < len(negativeP)/2; i++ {
+			negativeP[i], negativeP[len(negativeP)-1-i] = negativeP[len(negativeP)-1-i], negativeP[i]
+		}
+		for i := range negativeP {
+			negativeP[i].Inv(negativeP[i])
+		}
+		negativeP = append(Vector{big.NewRat(0, 1)}, negativeP...)
+		p0 := pn[debth]
+		gp1, g := RationalFromContinued(negativeP)
+		return -1, RationalFunc{}, g, Vector{}, gp1.bot, p0, c
+	} else if c == "i-" {
+		debth++
+		pn := computePN(alpha, p, q, debth)
+		positiveP := pn[debth+1:]
+		for i := range positiveP {
+			positiveP[i].Inv(positiveP[i])
+		}
+		positiveP = append(Vector{big.NewRat(0, 1)}, positiveP...)
+		p0 := pn[debth]
+		fp1, f := RationalFromContinued(positiveP)
+		return -1, f, RationalFunc{}, fp1.bot, Vector{}, p0, c
 	}
-	for i := range positiveP {
-		// positiveP[i] = 1 / positiveP[i]
-		positiveP[i].Inv(positiveP[i])
-		// negativeP[i] = 1 / negativeP[i]
-		negativeP[i].Inv(negativeP[i])
-	}
-	positiveP = append(Vector{big.NewRat(0, 1)}, positiveP...)
-	negativeP = append(Vector{big.NewRat(0, 1)}, negativeP...)
-	p0 := pn[debth]
-	fp1, f := RationalFromContinued(positiveP)
-	// fmt.Println(f)
-	gp1, g := RationalFromContinued(negativeP)
-	// equation := f.top.PolynomialMul(g.bot).Add(g.top.PolynomialMul(f.bot)).Add(Vector{big.NewRat(0, 1), new(big.Rat).Inv(p0)}.PolynomialMul(g.bot).PolynomialMul(f.bot))
-	// var result = func(x float64) float64 {
-	// 	res := 0.0
-	// 	for i := range equation {
-	// 		f, _ := equation[i].Float64()
-	// 		res += math.Pow(x, float64(i)) * f
+	return 0, RationalFunc{}, RationalFunc{}, Vector{}, Vector{}, new(big.Rat), "error"
+}
 
-	// 	}
-	// 	return res
-	// }
-	// fmt.Println(p0)
-	// fmt.Println(equation.toString())
-	return -1, f, g, fp1.bot, gp1.bot, p0
+func getCase(p, q Vector) string {
+	r2 := p.SizeSquared()
+	qpp := p.Add(q).SizeSquared()
+	qmp := p.Add(q.Mul(big.NewRat(-1, 1))).SizeSquared()
+	if qpp.Cmp(r2) == 1 && qmp.Cmp(r2) == 1 {
+		return "i0"
+	} else if qpp.Cmp(r2) == -1 && qmp.Cmp(r2) == 1 {
+		return "ii"
+	} else if qpp.Cmp(r2) == 0 && qmp.Cmp(r2) == 1 {
+		return "i+"
+	} else if qpp.Cmp(r2) == 1 && qmp.Cmp(r2) == 0 {
+		return "i-"
+	}
+	return ""
 }

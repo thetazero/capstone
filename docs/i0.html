@@ -6,11 +6,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Case I0</title>
   <link rel="stylesheet" href="https://thetazero.github.io/style.css">
-  <style>
-    .bad {
-      color: hsl(0, 100%, 70%);
-    }
-  </style>
+  <link rel="stylesheet" href="style.css">
 </head>
 
 <body>
@@ -50,12 +46,6 @@
     let p = [3, 1];
     let q = [-1, 2];
 
-    function setPQ() {
-      p = parseVector(document.querySelector("#p").value)
-      q = parseVector(document.querySelector("#q").value)
-      draw()
-    }
-
     function solveBtn() {
       let alpha = parseFloat(document.querySelector("#alpha-input").value)
       p = parseVector(document.querySelector("#p").value)
@@ -63,36 +53,25 @@
       let debth = parseInt(document.querySelector("#debth").value)
       let result = solve(alpha, p, q, debth)
       console.log(result)
-
-      let fbot = PolynomialString(result['fbot'])
-      let ftop = PolynomialString(result['ftop'])
-      let fbotplus1 = PolynomialString(result['fbotplus1'])
-
-      let gbot = PolynomialString(result['gbot'])
-      let gtop = PolynomialString(result['gtop'])
-      let gbotplus1 = PolynomialString(result['gbotplus1'])
-
-      calculator.setExpression({ id: 'graph1', latex: `f(x)=(${ftop})/(${fbot})`, color: "#2d70b3" })
-      calculator.setExpression({ id: 'f_error', latex: `\\left|y-\\frac{${ftop}}{${fbot}}\\right|<\\frac{1}{(${fbot})(${fbotplus1})}`, color: "#3d80c3" })
-      calculator.setExpression({ id: 'graph2', latex: `g(x)=(${gtop}) /(${gbot})`, color: "#fa7e19" })
-      calculator.setExpression({ id: 'g_error', latex: `\\left|y-\\frac{${gtop}}{${gbot}}\\right|<\\frac{1}{(${gbot})(${gbotplus1})}`, color: "ff8d19" })
-      calculator.setExpression({ id: 'graph3', latex: `f(x)+g(x)+x/${result['p0']}`, color: "#000000" })
-    }
-
-    function PolynomialString(vector) {
-      let poly = ""
-      for (let i = 0; i < vector.length; i++) {
-        poly += `${vector[i]}x^{${i}}`
-        if (i != vector.length - 1) {
-          poly += "+"
-        }
+      
+      resetCalc()
+      let { ftop, fbot, fbotplus1, gtop, gbot, gbotplus1, p0 } = result
+      let c = result['case']
+      if (c == 'i0' || c == 'i-') {
+        calculator.setExpression({ id: 'graph1', latex: `f(x)=${makeRationalFunc(ftop, fbot)}`, color: "#2d70b3" })
+        calculator.setExpression({ id: 'f_error', latex: makeErrorBounds("f", fbot, fbotplus1), color: "#3d80c3" })
       }
-      return poly
-    }
-
-    function parseVector(text) {
-      text = text.replace(/</g, "[").replace(/>/, "]").replace(/\(/g, "[").replace(/\)/g, "]")
-      return JSON.parse(text)
+      if (c == "i0" || c == "i+") {
+        calculator.setExpression({ id: 'graph2', latex: `g(x)=${makeRationalFunc(gtop, gbot)}`, color: "#fa7e19" })
+        calculator.setExpression({ id: 'g_error', latex: makeErrorBounds("g", gbot, gbotplus1), color: "#ff8d19" })
+      }
+      if (c == "i0") {
+        calculator.setExpression({ id: 'graph3', latex: `f(x)+g(x)+\\frac{x}{${p0}}`, color: "#000000" })
+      } else if (c == "i+") {
+        calculator.setExpression({ id: 'graph3', latex: `g(x)+\\frac{x}{${p0}}`, color: "#000000" })
+      } else if (c == 'i-') {
+        calculator.setExpression({ id: 'graph3', latex: `f(x)+\\frac{x}{${p0}}`, color: "#000000" })
+      }
     }
 
     const calcElem = document.getElementById('calculator');
@@ -112,6 +91,7 @@
   </script>
   <script src="https://cdn.jsdelivr.net/npm/p5@1.1.9/lib/p5.js"></script>
   <script src="vectorControls.js"></script>
+  <script src="shared.js"></script>
 </body>
 
 </html>

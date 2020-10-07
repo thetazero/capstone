@@ -48,25 +48,56 @@ func ns_an(ν *big.Rat, p, q, pn Vector) []Vector {
 
 // returns f, g, fp1.top, gp1.top, p0
 
-func solve_ns(ν *big.Rat, p, q Vector, debth int64) (RationalFunc, RationalFunc, Vector, Vector, Vector) {
-	debth++
-	pn := ns_pn(p, q, debth)
-	coeff := ns_an(ν, p, q, pn)
-	fmt.Println(coeff)
-	positiveCoeff := make([]Vector, len(coeff))
-	negativeCoeff := make([]Vector, len(coeff))
-	for j := range coeff {
-		positiveCoeff[j] = coeff[j][debth+1:]
-		positiveCoeff[j] = append(Vector{big.NewRat(0, 1)}, positiveCoeff[j]...)
-		negativeCoeff[j] = coeff[j][:debth]
-		for i := 0; i < len(negativeCoeff[j])/2; i++ {
-			negativeCoeff[j][i], negativeCoeff[j][len(negativeCoeff[j])-1-i] = negativeCoeff[j][len(negativeCoeff[j])-1-i], negativeCoeff[j][i]
-		}
-		negativeCoeff[j] = append(Vector{big.NewRat(0, 1)}, negativeCoeff[j]...)
+func solve_ns(ν *big.Rat, p, q Vector, debth int64) (RationalFunc, RationalFunc, Vector, Vector, Vector, string) {
+	c := getCase(p, q)
+	if c == "i0" {
+		debth++
+		pn := ns_pn(p, q, debth)
+		coeff := ns_an(ν, p, q, pn)
+		fmt.Println(coeff)
+		positiveCoeff := make([]Vector, len(coeff))
+		negativeCoeff := make([]Vector, len(coeff))
+		for j := range coeff {
+			positiveCoeff[j] = coeff[j][debth+1:]
+			positiveCoeff[j] = append(Vector{big.NewRat(0, 1)}, positiveCoeff[j]...)
+			negativeCoeff[j] = coeff[j][:debth]
+			for i := 0; i < len(negativeCoeff[j])/2; i++ {
+				negativeCoeff[j][i], negativeCoeff[j][len(negativeCoeff[j])-1-i] = negativeCoeff[j][len(negativeCoeff[j])-1-i], negativeCoeff[j][i]
+			}
+			negativeCoeff[j] = append(Vector{big.NewRat(0, 1)}, negativeCoeff[j]...)
 
+		}
+		fp1, f := RationalFromContinuedVector(positiveCoeff)
+		gp1, g := RationalFromContinuedVector(negativeCoeff)
+		return f, g, fp1.bot, gp1.bot, Vector{coeff[0][debth], coeff[1][debth]}, c
+	} else if c == "i+" {
+		debth++
+		pn := ns_pn(p, q, debth)
+		coeff := ns_an(ν, p, q, pn)
+		fmt.Println(coeff)
+		negativeCoeff := make([]Vector, len(coeff))
+		for j := range coeff {
+			negativeCoeff[j] = coeff[j][:debth]
+			for i := 0; i < len(negativeCoeff[j])/2; i++ {
+				negativeCoeff[j][i], negativeCoeff[j][len(negativeCoeff[j])-1-i] = negativeCoeff[j][len(negativeCoeff[j])-1-i], negativeCoeff[j][i]
+			}
+			negativeCoeff[j] = append(Vector{big.NewRat(0, 1)}, negativeCoeff[j]...)
+
+		}
+		gp1, g := RationalFromContinuedVector(negativeCoeff)
+		return RationalFunc{}, g, Vector{}, gp1.bot, Vector{coeff[0][debth], coeff[1][debth]}, c
+	} else if c == "i-" {
+		debth++
+		pn := ns_pn(p, q, debth)
+		coeff := ns_an(ν, p, q, pn)
+		fmt.Println(coeff)
+		positiveCoeff := make([]Vector, len(coeff))
+		for j := range coeff {
+			positiveCoeff[j] = coeff[j][debth+1:]
+			positiveCoeff[j] = append(Vector{big.NewRat(0, 1)}, positiveCoeff[j]...)
+		}
+		fp1, f := RationalFromContinuedVector(positiveCoeff)
+		return f, RationalFunc{}, fp1.bot, Vector{}, Vector{coeff[0][debth], coeff[1][debth]}, c
 	}
-	fp1, f := RationalFromContinuedVector(positiveCoeff)
-	// fmt.Println(f)
-	gp1, g := RationalFromContinuedVector(negativeCoeff)
-	return f, g, fp1.bot, gp1.bot, Vector{coeff[0][debth], coeff[1][debth]}
+	return RationalFunc{}, RationalFunc{}, Vector{}, Vector{}, Vector{}, "error"
 }
