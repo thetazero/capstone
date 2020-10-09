@@ -6,7 +6,12 @@ function PolynomialString(vector) {
       continue
     }
     if (vector[i] != 1) {
-      poly += `${vector[i]}`
+      let num = `${vector[i]}`
+      let index = num.indexOf("e")
+      if (index != -1) {
+        num = `${num.slice(0, index)}\\cdot 10^{${num.slice(index + 2, num.length)}}`
+      }
+      poly += num
     }
     if (i > 1) {
       poly += `x^{${i}}`
