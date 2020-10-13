@@ -57,20 +57,21 @@
       resetCalc()
       let { ftop, fbot, fbotplus1, gtop, gbot, gbotplus1, p0 } = result
       let c = result['case']
+      let bounds = "\\left\\{x\\ge0\\right\\}"
       if (c == 'i0' || c == 'i-') {
-        calculator.setExpression({ id: 'graph1', latex: `f(x)=${makeRationalFunc(ftop, fbot)}{x>0}`, color: "#2d70b3" })
-        calculator.setExpression({ id: 'f_error', latex: `${makeErrorBounds("f", fbot, fbotplus1)}{x>0}`, color: "#3d80c3" })
+        calculator.setExpression({ id: 'graph1', latex: `f(x)=${makeRationalFunc(ftop, fbot)}${bounds}`, color: "#2d70b3" })
+        calculator.setExpression({ id: 'f_error', latex: `${makeErrorBounds("f", fbot, fbotplus1)}${bounds}`, color: "#3d80c3" })
       }
       if (c == "i0" || c == "i+") {
-        calculator.setExpression({ id: 'graph2', latex: `g(x)=${makeRationalFunc(gtop, gbot)}{x>0}`, color: "#fa7e19" })
-        calculator.setExpression({ id: 'g_error', latex: `${makeErrorBounds("g", gbot, gbotplus1)}{x>0}`, color: "#ff8d19" })
+        calculator.setExpression({ id: 'graph2', latex: `g(x)=${makeRationalFunc(gtop, gbot)}${bounds}`, color: "#fa7e19" })
+        calculator.setExpression({ id: 'g_error', latex: `${makeErrorBounds("g", gbot, gbotplus1)}${bounds}`, color: "#ff8d19" })
       }
       if (c == "i0") {
-        calculator.setExpression({ id: 'graph3', latex: `f(x)+g(x)+${PolynomialString(p0)}{x>0}`, color: "#000000" })
+        calculator.setExpression({ id: 'graph3', latex: `f(x)+g(x)+${PolynomialString(p0)}${bounds}`, color: "#000000" })
       } else if (c == "i+") {
-        calculator.setExpression({ id: 'graph3', latex: `g(x)+${PolynomialString(p0)}{x>0}`, color: "#000000" })
+        calculator.setExpression({ id: 'graph3', latex: `g(x)+${PolynomialString(p0)}${bounds}`, color: "#000000" })
       } else if (c == 'i-') {
-        calculator.setExpression({ id: 'graph3', latex: `f(x)+${PolynomialString(p0)}{x>0}`, color: "#000000" })
+        calculator.setExpression({ id: 'graph3', latex: `f(x)+${PolynomialString(p0)}${bounds}`, color: "#000000" })
       }
     }
 
@@ -81,12 +82,12 @@
       invertedColors: true,
       expressionsCollapsed: true,
     })
-    // calculator.setMathBounds({
-    //   left: -10,
-    //   right: 10,
-    //   bottom: ,
-    //   top: 0.05,
-    // })
+    calculator.setMathBounds({
+      left: -0.1,
+      right: 5,
+      bottom: -0.1,
+      top: 1.2,
+    })
     calculator.setDefaultState(calculator.getState())
   </script>
   <script src="https://cdn.jsdelivr.net/npm/p5@1.1.9/lib/p5.js"></script>
