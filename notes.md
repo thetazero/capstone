@@ -8,3 +8,13 @@
 - Allow entering of margin of error for solution, instead of debth input.
 - Learn argument principle
 - Case II
+- Give the answer + case
+
+
+- reverse colors media query maybe
+@media (inverted-colors: inverted) {
+  p {
+    background: black;
+    color: yellow;
+  }
+}

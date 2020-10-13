@@ -5,7 +5,7 @@ function PolynomialString(vector) {
     if (vector[i] == 0) {
       continue
     }
-    if (vector[i] != 1) {
+    if (vector[i] != 1 || i == 0) {
       let num = `${vector[i]}`
       let index = num.indexOf("e")
       if (index != -1) {

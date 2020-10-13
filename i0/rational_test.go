@@ -118,6 +118,21 @@ func TestRationalFromContinuedVector(t *testing.T) {
 				bot: MakeIntVector([]int64{1, 0}),
 			},
 		},
+		{
+			"only x^1 terms test",
+			[]Vector{
+				MakeIntVector([]int64{0, 0, 0}),
+				MakeIntVector([]int64{1, 2, 3}),
+			},
+			RationalFunc{
+				top: MakeIntVector([]int64{0, 4, 0, 6}),
+				bot: MakeIntVector([]int64{1, 0, 6, 0}),
+			},
+			RationalFunc{
+				top: MakeIntVector([]int64{1, 0, 2}),
+				bot: MakeIntVector([]int64{0, 2, 0}),
+			},
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {

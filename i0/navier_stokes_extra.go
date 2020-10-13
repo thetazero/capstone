@@ -65,7 +65,6 @@ func solve_ns(ν *big.Rat, p, q Vector, debth int64) (RationalFunc, RationalFunc
 				negativeCoeff[j][i], negativeCoeff[j][len(negativeCoeff[j])-1-i] = negativeCoeff[j][len(negativeCoeff[j])-1-i], negativeCoeff[j][i]
 			}
 			negativeCoeff[j] = append(Vector{big.NewRat(0, 1)}, negativeCoeff[j]...)
-
 		}
 		fp1, f := RationalFromContinuedVector(positiveCoeff)
 		gp1, g := RationalFromContinuedVector(negativeCoeff)
