@@ -132,3 +132,32 @@ func MakeIntVector(a []int64) Vector {
 	}
 	return x
 }
+
+func TestVector_Compute(t *testing.T) {
+	tests := []struct {
+		name string
+		v    Vector
+		x    *big.Rat
+		want *big.Rat
+	}{
+		{
+			"1+2x+3x^2 at x=5",
+			MakeIntVector([]int64{1, 2, 3}),
+			RInt(5),
+			RInt(86),
+		},
+		{
+			"0+3/2x+7/15x^2 at x=2/3",
+			Vector{big.NewRat(0, 1), big.NewRat(3, 2), big.NewRat(7, 15)},
+			big.NewRat(2, 3),
+			big.NewRat(163, 135),
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if got := tt.v.Compute(tt.x); !reflect.DeepEqual(got, tt.want) {
+				t.Errorf("Vector.Compute() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}

@@ -51,6 +51,17 @@ func (v Vector) Add(a Vector) Vector {
 	return r
 }
 
+//Compute computes the value of the vector at x as if it is a polynomial, ie: [1,2,3]=1+2x+3x^2
+func (v Vector) Compute(x *big.Rat) *big.Rat {
+	c := big.NewRat(1, 1)
+	ans := big.NewRat(0, 1)
+	for i := range v {
+		ans.Add(new(big.Rat).Mul(c, v[i]), ans)
+		c.Mul(c, x)
+	}
+	return ans
+}
+
 //SizeSquared ;
 func (v Vector) SizeSquared() *big.Rat {
 	x := big.NewRat(0, 1)

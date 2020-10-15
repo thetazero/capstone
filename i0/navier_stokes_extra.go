@@ -68,6 +68,32 @@ func solve_ns(ν *big.Rat, p, q Vector, debth int64) (RationalFunc, RationalFunc
 		}
 		fp1, f := RationalFromContinuedVector(positiveCoeff)
 		gp1, g := RationalFromContinuedVector(negativeCoeff)
+		computer := func(x *big.Rat) *big.Rat {
+			a := f.Compute(x)
+			a.Add(a, g.Compute(x))
+			a.Add(a, Vector{coeff[0][debth], coeff[1][debth]}.Compute(x))
+			return a
+		}
+		yvals := "["
+		xvals := "["
+		steps := int64(1000)
+		lower, upper := int64(-19), int64(-10)
+		for i := 0; i < 1000; i++ {
+			if i != 0 {
+				yvals += ","
+				xvals += ","
+			}
+			x := big.NewRat(int64(i), steps/(upper-lower))
+			x.Add(x, big.NewRat(lower, 1))
+			yvals += computer(x).FloatString(5)
+			xvals += x.FloatString(5)
+		}
+		yvals += "]"
+		xvals += "]"
+		fmt.Println(xvals)
+		fmt.Println("------")
+		fmt.Println(yvals)
+		fmt.Println(computer(big.NewRat(0, 1)).FloatString(5))
 		return f, g, fp1.bot, gp1.bot, Vector{coeff[0][debth], coeff[1][debth]}, c
 	} else if c == "i+" {
 		debth++

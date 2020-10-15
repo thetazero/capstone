@@ -57,7 +57,8 @@
       resetCalc()
       let { ftop, fbot, fbotplus1, gtop, gbot, gbotplus1, p0 } = result
       let c = result['case']
-      let bounds = "\\left\\{x\\ge0\\right\\}"
+      // let bounds = "\\left\\{x\\ge0\\right\\}"
+      let bounds = ""
       if (c == 'i0' || c == 'i-') {
         calculator.setExpression({ id: 'graph1', latex: `f(x)=${makeRationalFunc(ftop, fbot)}${bounds}`, color: "#2d70b3" })
         calculator.setExpression({ id: 'f_error', latex: `${makeErrorBounds("f", fbot, fbotplus1)}${bounds}`, color: "#3d80c3" })

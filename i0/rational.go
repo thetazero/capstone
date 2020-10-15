@@ -85,6 +85,10 @@ func (r RationalFunc) equals(a RationalFunc) bool {
 	return r.top.equals(a.top) && r.bot.equals(a.bot)
 }
 
+func (r RationalFunc) Compute(x *big.Rat) *big.Rat {
+	return new(big.Rat).Quo(r.top.Compute(x), r.bot.Compute(x))
+}
+
 func RationalFromContinuedVector(a []Vector) (RationalFunc, RationalFunc) {
 	r := RationalFunc{}
 	// p/q
