@@ -18,7 +18,8 @@ func main() {
 }
 
 func solveJS(this js.Value, args []js.Value) interface{} {
-	alpha := big.NewRat(int64(args[0].Int()), 1)
+	alpha := new(big.Rat).SetFloat64(args[0].Float())
+	fmt.Println(alpha)
 	p := Vector{}
 	q := Vector{}
 	debth := int64(args[3].Int())
@@ -55,7 +56,7 @@ func solveJS(this js.Value, args []js.Value) interface{} {
 }
 
 func solve_nsJS(this js.Value, args []js.Value) interface{} {
-	ν := big.NewRat(int64(args[0].Int()), 1)
+	ν := new(big.Rat).SetFloat64(args[0].Float())
 	p := Vector{}
 	q := Vector{}
 	debth := int64(args[3].Int())
