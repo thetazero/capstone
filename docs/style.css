@@ -1,3 +1,8 @@
 .bad {
   color: hsl(0, 100%, 70%);
 }
+
+.katex-container{
+  max-width: 100%;
+  overflow-x: scroll;
+}

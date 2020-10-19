@@ -36,23 +36,70 @@
     <p>
       The problem is to find a positive solution to the following equation.
     </p>
-    <div class="katex">
+    <div class="katex-container">
       $$\frac{\lambda}{\rho_{0}}+f(\lambda)+g(\lambda)=0$$
     </div>
     <p>
       Where \(f(\lambda)\), \(g(\lambda)\) are defined by the following continued fractions
     </p>
-    <div class="katex">
+    <div class="katex-container">
       $$f(\lambda)=\frac{1}{\frac{\lambda}{\rho_{1}}+\frac{1}{\frac{\lambda}{\rho_{2}}+\dots}},\space \space
       g(\lambda)=\frac{1}{\frac{\lambda}{\rho_{-1}}+\frac{1}{\frac{\lambda}{\rho_{-2}}+\dots}}$$
     </div>
     <p>
       Where \(\rho_{n}\) is defined by the following formula
     </p>
-    <div class="katex">
+    <div class="katex-container">
       $$\rho_{n}=1-\frac{\|p\|^2(1-\alpha^2\|p\|^2)}{\|q+np\|^2(1-\alpha^2\|q+np\|^2)}$$
     </div>
+    <p>
+      However the first equation only works for case I0. 
+    </p>
+    <p>
+      {{Diagram of cases}}
+    </p>
+    <p>
+      For case I+ we have the equation:
+    </p>
+    <div class="katex-container">
+      equation
+    </div>
+    <p>
+      For case I- we have the equation:
+    </p>
+    <div class="katex-container">
+      equation #2
+    </div>
+    <p>
+      {{Maybe talk about plans for case II}}
+    </p>
     <h2><a href="navier-stokes">Navier-Stokes Case</a></h2>
+    <p>
+      {{More context that I don't quite get}}
+    </p>
+    <p>
+      For this case, the method for solving is mostly identical.
+      There is a very similar equation to solve:
+    </p>
+    <div class="katex-container">
+      $$a_{0}(\lambda, \nu)+f(\lambda, \nu)+g(\lambda, \nu)=0$$
+    </div>
+    <p>
+      Where \(f(\lambda)\), \(g(\lambda)\) are defined by the following continued fractions
+    </p>
+    <div class="katex-container">
+      $$f(\lambda)=\frac{1}{a_{1}(\lambda, \nu)+\frac{1}{a_{2}(\lambda, \nu)+\dots}},\space \space
+      g(\lambda)=\frac{1}{a_{-1}(\lambda, \nu)+\frac{1}{a_{-2}(\lambda, \nu)+\dots}}$$
+    </div>
+    <p>
+      Where
+    </p>
+    <div class="katex-container">
+      $$a_{n}(\lambda, \nu)=\frac{\lambda+\nu\|q+np\|^2}{\rho_{n}}$$
+    </div>
+    <p>
+      Computationally, this leads to much faster convergance than in the Euler Case because of the large constant terms.
+    </p>
   </div>
 </body>
 
