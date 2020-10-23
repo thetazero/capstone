@@ -36,9 +36,11 @@
   <script>
     const go = new Go();
     let mod, inst;
+    let ready = false
     WebAssembly.instantiateStreaming(fetch("i0.wasm"), go.importObject).then(async result => {
       mod = result.module;
       inst = result.instance;
+      ready = true
       await go.run(inst);
     });
   </script>
@@ -53,7 +55,7 @@
       let debth = parseInt(document.querySelector("#debth").value)
       let result = solve(alpha, p, q, debth)
       console.log(result)
-      
+
       resetCalc()
       let { ftop, fbot, fbotplus1, gtop, gbot, gbotplus1, p0 } = result
       let c = result['case']

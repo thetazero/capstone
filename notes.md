@@ -9,6 +9,8 @@
 - Learn argument principle
 - Case II
 - Give the answer + case
+- show case onload
+- worked out example
 
 
 - reverse colors media query maybe

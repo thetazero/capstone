@@ -34,11 +34,13 @@
   <script src="https://www.desmos.com/api/v1.5/calculator.js?apiKey=dcb31709b452b1cf9dc26972add0fda6"></script>
   <script src="wasm_exec.js"></script>
   <script>
+    let ready = false
     const go = new Go();
     let mod, inst;
     WebAssembly.instantiateStreaming(fetch("i0.wasm"), go.importObject).then(async result => {
       mod = result.module;
       inst = result.instance;
+      ready = true
       await go.run(inst);
     });
   </script>

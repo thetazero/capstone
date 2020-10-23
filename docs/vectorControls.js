@@ -6,6 +6,7 @@ window.onload = () => {
 
 let vSize = 256
 function setup() {
+  document.querySelector("#vector-controls").innerHTML += '<span id="case"></span>'
   let cnv = createCanvas(vSize, vSize)
   cnv.parent('vector-controls')
   noLoop()
@@ -25,6 +26,9 @@ function draw() {
   line(m + q[0] * scale, m - q[1] * scale, m + qm[0] * scale, m - qm[1] * scale)
   fill(200)
   circle(m + q[0] * scale, m - q[1] * scale, 8)
+  if (ready) {
+    document.querySelector("#case").innerText = get_case(p, q).toUpperCase()
+  }
 }
 
 function CartesianSize(arr) {

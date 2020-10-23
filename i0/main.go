@@ -14,6 +14,7 @@ func main() {
 	c := make(chan struct{}, 0)
 	js.Global().Set("solve", js.FuncOf(solveJS))
 	js.Global().Set("solve_ns", js.FuncOf(solve_nsJS))
+	js.Global().Set("get_case", js.FuncOf(getCaseJS))
 	<-c
 }
 
@@ -30,24 +31,25 @@ func solveJS(this js.Value, args []js.Value) interface{} {
 		q = append(q, big.NewRat(int64(args[2].Index(i).Int()), 1))
 	}
 	lambda, f, g, fbotplus1, gbotplus1, p0, pCase := solve(alpha, p, q, debth)
+	fmt.Println(pCase)
 	res := make(map[string]interface{})
 	res["case"] = pCase
 	res["lambda"] = lambda
 	rho0, _ := p0.Float64()
 	res["p0"] = rho0
-	switch pCase {
-	case "i0":
+	switch {
+	case pCase == "i0" || pCase == "ii":
 		res["ftop"] = f.top.toFloatArr()
 		res["fbot"] = f.bot.toFloatArr()
 		res["gtop"] = g.top.toFloatArr()
 		res["gbot"] = g.bot.toFloatArr()
 		res["fbotplus1"] = fbotplus1.toFloatArr()
 		res["gbotplus1"] = gbotplus1.toFloatArr()
-	case "i+":
+	case pCase == "i+":
 		res["gtop"] = g.top.toFloatArr()
 		res["gbot"] = g.bot.toFloatArr()
 		res["gbotplus1"] = gbotplus1.toFloatArr()
-	case "i-":
+	case pCase == "i-":
 		res["ftop"] = f.top.toFloatArr()
 		res["fbot"] = f.bot.toFloatArr()
 		res["fbotplus1"] = fbotplus1.toFloatArr()
@@ -88,7 +90,7 @@ func (r RationalFunc) compute() float64 {
 
 func solve(alpha *big.Rat, p, q Vector, debth int64) (float64, RationalFunc, RationalFunc, Vector, Vector, *big.Rat, string) {
 	c := getCase(p, q)
-	if c == "i0" {
+	if c == "i0" || c == "ii" {
 		debth++
 		pn := computePN(alpha, p, q, debth)
 		fmt.Println(pn)
@@ -133,7 +135,7 @@ func solve(alpha *big.Rat, p, q Vector, debth int64) (float64, RationalFunc, Rat
 		fp1, f := RationalFromContinued(positiveP)
 		return -1, f, RationalFunc{}, fp1.bot, Vector{}, p0, c
 	}
-	return 0, RationalFunc{}, RationalFunc{}, Vector{}, Vector{}, new(big.Rat), "error"
+	return 0, RationalFunc{}, RationalFunc{}, Vector{}, Vector{}, new(big.Rat), c
 }
 
 func getCase(p, q Vector) string {
@@ -150,4 +152,16 @@ func getCase(p, q Vector) string {
 		return "i-"
 	}
 	return ""
+}
+
+func getCaseJS(this js.Value, args []js.Value) interface{} {
+	p := Vector{}
+	q := Vector{}
+	for i := 0; i < args[0].Length(); i++ {
+		p = append(p, big.NewRat(int64(args[0].Index(i).Int()), 1))
+	}
+	for i := 0; i < args[1].Length(); i++ {
+		q = append(q, big.NewRat(int64(args[1].Index(i).Int()), 1))
+	}
+	return getCase(p, q)
 }

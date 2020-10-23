@@ -29,8 +29,16 @@ function parseVector(text) {
 }
 
 function setPQ() {
-  p = parseVector(document.querySelector("#p").value)
-  q = parseVector(document.querySelector("#q").value)
+  try {
+    p = parseVector(document.querySelector("#p").value)
+  } catch {
+
+  }
+  try {
+    q = parseVector(document.querySelector("#q").value)
+  } catch { 
+    
+  }
   draw()
 }
 
