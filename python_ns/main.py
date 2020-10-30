@@ -57,6 +57,9 @@ def plot(nu, p, q, debth, start, end, step):
                  computeAtLambda(x, nConst, nLam)+x*p0Lam+p0Const, x))
     # print(x, y)
     plt.plot(x, y)
+    plt.title(label='f(λ,ν)+g(λ,ν)+aₒ(λ,ν)')
+    plt.axhline(y=0, color="k")
+    plt.axvline(x=0, color="k")
     plt.show()
 
 
