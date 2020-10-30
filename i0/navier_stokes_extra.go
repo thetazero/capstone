@@ -10,9 +10,14 @@ func ns_pn(p, q Vector, debth int64) Vector {
 	x := make(Vector, debth*2+1)
 	ps := p.SizeSquared()
 	one := big.NewRat(1, 1)
+	c := getCase(p, q)
 	for i := range x {
 		//1 - ||p||^2 / ||q+np||^2
 		n := big.NewRat(int64(i)-debth, 1)
+		if (c == "i-" && int64(i) < debth) || (c == "i+" && int64(i) > debth) {
+			x[i] = big.NewRat(42, 1)
+			continue
+		}
 		sq := big.NewRat(0, 1)
 		for j := range q {
 			t := new(big.Rat).Add(q[j], new(big.Rat).Mul(p[j], n))
