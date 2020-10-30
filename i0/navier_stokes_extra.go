@@ -23,6 +23,7 @@ func ns_pn(p, q Vector, debth int64) Vector {
 		x[i].Mul(x[i], ps)
 		x[i].Sub(one, x[i])
 	}
+	fmt.Println(x)
 	return x
 }
 
@@ -114,6 +115,7 @@ func solve_ns(ν *big.Rat, p, q Vector, debth int64) (RationalFunc, RationalFunc
 	} else if c == "i-" {
 		debth++
 		pn := ns_pn(p, q, debth)
+		fmt.Println("pn for i-,", pn)
 		coeff := ns_an(ν, p, q, pn)
 		fmt.Println(coeff)
 		positiveCoeff := make([]Vector, len(coeff))

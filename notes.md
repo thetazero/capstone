@@ -11,7 +11,16 @@
 - Give the answer + case
 - show case onload
 - worked out example
+- Varient, debth
+- Explanation of graph for each page
+- Don't need to track error
 
+
+1. Send writing over to him by Wednesday, brief Euler+Navier Stokes description and stablitiy. Detailed description of methodology. Make it a tex file.
+1. Add I+, I- for Navier-Stokes case 
+1. Then start on II case
+
+November 9th
 
 - reverse colors media query maybe
 @media (inverted-colors: inverted) {

@@ -22,7 +22,6 @@ type RationalFunc struct {
 // 		r.bot = qm1.Mul(v).ShiftRight().Add(qm2)
 // 		pm1, pm2 = r.top, pm1
 // 		qm1, qm2 = r.bot, qm1
-// 		// fmt.Println(r.top.toString(), r.bot.toString())
 // 	}
 // 	return r, RationalFunc{top: pm2, bot: qm2}
 // }
@@ -72,7 +71,6 @@ func RationalFromContinued(a Vector) (RationalFunc, RationalFunc) {
 		pm1, pm2 = pm2, pm1
 		qm1, qm2 = qm2, qm1
 		// pm1, pm2 = r.top, pm1
-		// fmt.Println(r.top.toString(), r.bot.toString())
 	}
 	pm1.reverse()
 	pm2.reverse()
@@ -105,7 +103,6 @@ func RationalFromContinuedVector(a []Vector) (RationalFunc, RationalFunc) {
 		r.bot = qm1.PolynomialMul(x).Add(qm2)
 		pm1, pm2 = r.top, pm1
 		qm1, qm2 = r.bot, qm1
-		// fmt.Println(r.top.toString(), r.bot.toString())
 	}
 	return r, RationalFunc{top: pm2, bot: qm2}
 }
