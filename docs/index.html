@@ -4,7 +4,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Eigenvalues of the linearized Navier Stokes and Euler Equations</title>
+  <title>Eigenvalues of the linearized Navier-Stokes and Euler Equations</title>
   <link rel="stylesheet" href="https://thetazero.github.io/style.css">
   <link rel="stylesheet" href="style.css">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.css"
@@ -27,79 +27,86 @@
 
 <body>
   <div class="container">
-    <h1>Finding Eigenvalues of the linearized Navier Stokes and Euler Equations</h1>
+    <h1>Finding Eigenvalues of the linearized Navier-Stokes and Euler Equations</h1>
     <hr>
-    <h2><a href="i0">Euler Case</a></h2>
     <p>
-      We are looking for Eigenvalues of the linearized Euler equation at p. 
-      If we find a real solution to the case i0, we know that it is unstable.
+      <a href="i0">α-Euler Link</a>, <a href="navier-stokes">Navier-Stokes Link</a>
+    </p>
+    <h2>Introduction</h2>
+    <p>
+      The program finds solutions to the linearized 2D α-Euler equations on a torus for unidirectional flows.
+      This is done in order to determine the stability of the case.
+    </p>
+    <h2>Cases</h2>
+    <img src="imgs/cases_dark.png" class="small" alt="diagram of cases I0, I+, I- and II">
+    <p>
+      The circle has radius p.
+      For case I0, q+p and q-p are out of the circle.
+      For case I+, q+p is on the boundary and q-p is out of the circle.
+      For case I-, q-p is on the boundary and q+p is out of the circle.
+      For case II, either q+p or q-p must be in the circle.
     </p>
     <p>
-      The problem is to find a positive solution to the following equation.
+      The equations are listed as Euler, Navier-Stokes.
+    </p>
+    <p>
+      For case I0 the equations are
     </p>
     <div class="katex-container">
-      $$\frac{\lambda}{\rho_{0}}+f(\lambda)+g(\lambda)=0$$
+      $$\frac{\lambda}{\rho_{0}}+f(\lambda)+g(\lambda)=0,\quad
+      a_{0}(\lambda, \nu)+f(\lambda, \nu)+g(\lambda, \nu)=0$$
     </div>
     <p>
-      Where \(f(\lambda)\), \(g(\lambda)\) are defined by the following continued fractions
+      For I+
     </p>
     <div class="katex-container">
-      $$f(\lambda)=\frac{1}{\frac{\lambda}{\rho_{1}}+\frac{1}{\frac{\lambda}{\rho_{2}}+\dots}},\space \space
+      $$\frac{\lambda}{\rho_{0}}+g(\lambda)=0, \quad
+      a_{0}(\lambda, \nu)+g(\lambda, \nu)=0$$
+    </div>
+    <p>
+      For I-
+    </p>
+    <div class="katex-container">
+      $$\frac{\lambda}{\rho_{0}}+f(\lambda)=0, \quad
+      a_{0}(\lambda, \nu)+f(\lambda, \nu)=0$$
+    </div>
+    <p>
+      For II, things are a little more complicated as the equation should have complex roots, which is the next stage of
+      this project.
+    </p>
+    <h2>α-Euler Case Specifics</h2>
+    <div class="katex-container">
+      $$f(\lambda)=\frac{1}{\frac{\lambda}{\rho_{1}}+\frac{1}{\frac{\lambda}{\rho_{2}}+\dots}}, \quad
       g(\lambda)=\frac{1}{\frac{\lambda}{\rho_{-1}}+\frac{1}{\frac{\lambda}{\rho_{-2}}+\dots}}$$
-    </div>
-    <p>
-      Where \(\rho_{n}\) is defined by the following formula
-    </p>
-    <div class="katex-container">
       $$\rho_{n}=1-\frac{\|p\|^2(1-\alpha^2\|p\|^2)}{\|q+np\|^2(1-\alpha^2\|q+np\|^2)}$$
     </div>
-    <p>
-      However the first equation only works for case I0. 
-    </p>
-    <p>
-      {{Diagram of cases}}
-    </p>
-    <p>
-      For case I+ we have the equation:
-    </p>
+    <h2>Navier-Stokes Case Specifics</h2>
     <div class="katex-container">
-      equation
-    </div>
-    <p>
-      For case I- we have the equation:
-    </p>
-    <div class="katex-container">
-      equation #2
-    </div>
-    <p>
-      {{Maybe talk about plans for case II}}
-    </p>
-    <h2><a href="navier-stokes">Navier-Stokes Case</a></h2>
-    <p>
-      {{More context that I don't quite get}}
-    </p>
-    <p>
-      For this case, the method for solving is mostly identical.
-      There is a very similar equation to solve:
-    </p>
-    <div class="katex-container">
-      $$a_{0}(\lambda, \nu)+f(\lambda, \nu)+g(\lambda, \nu)=0$$
-    </div>
-    <p>
-      Where \(f(\lambda)\), \(g(\lambda)\) are defined by the following continued fractions
-    </p>
-    <div class="katex-container">
-      $$f(\lambda)=\frac{1}{a_{1}(\lambda, \nu)+\frac{1}{a_{2}(\lambda, \nu)+\dots}},\space \space
+      $$f(\lambda)=\frac{1}{a_{1}(\lambda, \nu)+\frac{1}{a_{2}(\lambda, \nu)+\dots}}, \quad
       g(\lambda)=\frac{1}{a_{-1}(\lambda, \nu)+\frac{1}{a_{-2}(\lambda, \nu)+\dots}}$$
-    </div>
-    <p>
-      Where
-    </p>
-    <div class="katex-container">
       $$a_{n}(\lambda, \nu)=\frac{\lambda+\nu\|q+np\|^2}{\rho_{n}}$$
     </div>
+    <h2>Computational Method</h2>
     <p>
-      Computationally, this leads to much faster convergance than in the Euler Case because of the large constant terms.
+      In both cases we are dealing with continued fractions.
+      The handy recursive formula for continued fractions allows us to convert the fractions into rational functions.
+      Let \(p_{n}/q_{n}\) be the nth convergent, and \(a_{n}\) be the nth coefficient.
+      Then we have
+    </p>
+    <div class="katex-container">
+      $$p_{n}=a_{n}p_{n-1}+p_{n-2}$$
+      $$q_{n}=a_{n}q_{n-1}+q_{n-2}$$
+    </div>
+    <p>
+      Note that for our case the coefficients $a_{n}$ are first degree polynomials.
+      Given that all coefficients are positive at a certain $\lambda$, this gives us the following error bounds (where x
+      is what the continued fraction converges to)
+    </p>
+    <div class="katex-container">
+      $$\left |x-\frac{p_{n}}{q_{n}} \right |&lt;\frac{1}{q_{n}q_{n+1}}$$
+    </div>
+    <p>
+      These rational functions are then computed, along with their corresponding error bounds and plugged into desmos.
     </p>
   </div>
 </body>
