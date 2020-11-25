@@ -2,9 +2,8 @@
   color: hsl(0, 100%, 70%);
 }
 
-
 @media only screen and (max-width: 600px) {
-  .katex-container{
+  .katex-container {
     max-width: 100%;
     overflow-x: scroll;
   }
@@ -15,4 +14,38 @@
   float: left;
   font-size: 24px;
   transform: translate(10px, 5px);
+}
+
+nav {
+  position: fixed;
+  left: 0px;
+  top: 0px;
+  width: 100%;
+  background: var(--background_nav);
+  --size: 50px;
+  height: var(--size);
+  z-index: 100;
+}
+
+nav ul {
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+}
+
+nav ul li {
+  float: left;
+}
+
+nav ul li a {
+  display: block;
+  text-align: center;
+  padding: 16px 16px;
+  text-decoration: none;
+  color:var(--text) !important;
+}
+
+nav ul li a:hover {
+  color: var(--accent) !important;
 }

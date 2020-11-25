@@ -10,6 +10,13 @@
 </head>
 
 <body>
+  <nav>
+    <ul>
+      <li><a href=".">Home</a></li>
+      <li><a href="i0">α-Euler</a></li>
+      <li><a href="navier-stokes">Navier-Stokes</a></li>
+    </ul>
+  </nav>
   <div class="container">
     <h1>Case I0</h1>
     <hr>
@@ -28,6 +35,7 @@
     <div id="vector-controls">
 
     </div>
+    <!-- <div id="3dchart"></div> -->
     <div id="calculator" style="width:100%; height:min(50vw, 70vh)"></div>
 
   </div>
@@ -74,6 +82,30 @@
       } else if (c == 'i-') {
         calculator.setExpression({ id: 'graph3', latex: `f(x)+\\frac{x}{${p0}}`, color: "#000000" })
       }
+
+      // if (c == "ii") {
+      //   console.log('ii time')
+      //   let F = λ => {
+      //     let f = makeComplexRatFunc(ftop, fbot)
+      //     let g = makeComplexRatFunc(gtop, gbot)
+      //     return math.add(f(λ), g(λ), math.divide(λ, p0))
+      //   }
+      //   //a+bi
+      //   let res = []
+      //   for (let a = -2; a <= 2; a += 0.02) {
+      //     let row = []
+      //     for (let b = -2; b <= 2; b += 0.02) {
+      //       let λ = math.complex(a, b)
+      //       row.push(math.abs(F(λ)))
+      //     }
+      //     res.push(row)
+      //   }
+      //   Plotly.newPlot('3dchart', [{
+      //     z: res,
+      //     type: 'surface'
+      //   }], {
+      //   })
+      // }
     }
 
     const calcElem = document.getElementById('calculator');
@@ -94,6 +126,9 @@
   <script src="https://cdn.jsdelivr.net/npm/p5@1.1.9/lib/p5.js"></script>
   <script src="vectorControls.js"></script>
   <script src="shared.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjs@7.6.0/dist/math.min.js"></script>
+  <script src="ii.js"></script>
+  <script src='https://cdn.plot.ly/plotly-latest.min.js'></script>
 </body>
 
 </html>
