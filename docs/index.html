@@ -38,8 +38,28 @@
     <hr>
     <h2>Introduction</h2>
     <p>
-      The program finds solutions to the linearized 2D α-Euler equations on a torus for unidirectional flows.
-      This is done in order to determine the stability of the case.
+      The Euler equation below is an idealized equation describing the behavior incompresible fluid.
+    </p>
+    <div class="katex-container">
+      $$\bold{u}_t+\bold{u}\cdot \nabla \bold{u}=-\nabla p,\space\space\space\space
+      \bold{u}=\bold{u}(t, \bold{x})$$
+    </div>
+    <p>
+      In the equation \(\bold{x}\) stands for the position of a particle at time \(t\), 
+      \(\bold{u}\) is the velocity of the particle located at \(x\) during time \(t\), and \(p\) is the pressure.
+      This formula can be derived from Newton's Second Law (\(F=ma\)).
+      There are many generalizations of the Euler equations. 
+      The two we are concerned with are the α-Euler model, and the Navier-Stokes equation (the specifics of which we will not go into).
+    </p>
+    
+    <p>
+      The paper this project is based on describes the stability of parallel flowing fluid on a torus. 
+      In this case stability means under slight perturbations the fluid flow will not become turbulent.
+    </p>
+
+    <p>
+      Through rather complicated math, which is best described in the paper below<a class="ref" href="#ref1">[1]</a> we arrive at equations containing continued fractions which allow us to determine the stability of the case.
+    </p>
     </p>
     <h2>Cases</h2>
     <img src="imgs/cases_dark.png" class="small" alt="diagram of cases I0, I+, I- and II">
@@ -102,16 +122,25 @@
       $$q_{n}=a_{n}q_{n-1}+q_{n-2}$$
     </div>
     <p>
-      Note that for our case the coefficients $a_{n}$ are first degree polynomials.
-      Given that all coefficients are positive at a certain $\lambda$, this gives us the following error bounds (where x
-      is what the continued fraction converges to)
+      Note that for our case the coefficients \(a_{n}\) are first degree polynomials.
+      Given that all coefficients are positive at a certain \(\lambda\), this gives us the following error bounds (where
+      \(f\)
+      is the value the continued fraction converges to)
     </p>
     <div class="katex-container">
-      $$\left |x-\frac{p_{n}}{q_{n}} \right |&lt;\frac{1}{q_{n}q_{n+1}}$$
+      $$\left |f-\frac{p_{n}}{q_{n}} \right |&lt;\frac{1}{q_{n}q_{n+1}}$$
     </div>
     <p>
       These rational functions are then computed, along with their corresponding error bounds and plugged into desmos.
     </p>
+    <hr>
+    <ol>
+      <li id="ref1">
+        H. Dullin, Y. Latushkin, R. Marangell, S. Vasudevan, and J. Worthington, “In-stability of unidirectional flows
+        for the 2d -euler equations”, Communicationson Pure Applied Analysis19, 2051–2079 (2020).
+      </li>
+      <!-- <li>Citation to the textbook which gave us the nice error bounds (use the fancy one because the simple on only uses natural coefficients)</li> -->
+    </ol>
   </div>
 </body>
 
