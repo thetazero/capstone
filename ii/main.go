@@ -10,6 +10,10 @@ func main() {
 	f := MakeEulerEquation(big.NewRat(1, 1), Vector{big.NewRat(3, 1), big.NewRat(1, 1)}, Vector{big.NewRat(-1, 1), big.NewRat(2, 1)}, 10)
 	aboutzero := f(Complex{big.NewRat(1539, 10), big.NewRat(0, 1)})
 	fmt.Println(aboutzero[0].FloatString(5), aboutzero[1].FloatString(3))
+	p := Path(func(i, j int) Complex {
+		return circle(i, j, big.NewRat(1, 1), big.NewRat(0, 1), big.NewRat(0, 1))
+	})
+	p.Draw(f)
 }
 
 func getCase(p, q Vector) string {
