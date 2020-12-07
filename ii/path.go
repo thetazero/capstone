@@ -1,20 +1,26 @@
 package main
 
 import (
-	"image/color"
+	"fmt"
 	"log"
+	"math"
 	"math/big"
 
+	"github.com/cheggaaa/pb"
+	"github.com/lucasb-eyer/go-colorful"
+
 	"gonum.org/v1/plot"
+	"gonum.org/v1/plot/palette/moreland"
 	"gonum.org/v1/plot/plotter"
 	"gonum.org/v1/plot/vg"
+	"gonum.org/v1/plot/vg/draw"
 )
 
 //Path defines a complex path. First argument is the step and Second is the total number of steps for a cycle. Prefer (relativly) equidistant samples.
 type Path func(int, int) Complex
 
 //Draw result of going along the path
-func (p Path) Draw(f EulerEquation) {
+func (p Path) Draw(f EulerEquation, path string) {
 	plt, err := plot.New()
 	if err != nil {
 		log.Panic(err)
@@ -30,53 +36,63 @@ func (p Path) Draw(f EulerEquation) {
 	// plt.X.Tick.Marker = plot.ConstantTicks([]plot.Tick{
 	// 	{Value: 0, Label: "0"}, {Value: 0.25, Label: ""}, {Value: 0.5, Label: "0.5"}, {Value: 0.75, Label: ""}, {Value: 1, Label: "1"},
 	// })
-	j := 1000
+
+	j := 100
 	pts := make(plotter.XYs, j)
+	bar := pb.StartNew(j)
 	for i := 0; i < j; i++ {
-		val := f(p(i, 100))
+		val := f(p(i, j))
 		// val := p(i, j)
+
 		real, _ := val[0].Float64()
 		img, _ := val[1].Float64()
 		pts[i] = plotter.XY{X: real, Y: img}
+		if i == 0 {
+			fmt.Println(pts[i])
+		}
 		// pts = append(pts, plotter.XY{X: 1, Y: 1})
+		bar.Increment()
 	}
+	bar.Finish()
 	// fmt.Println(pts)
 	scatter, err := plotter.NewScatter(pts)
 	if err != nil {
 		log.Panic(err)
 	}
+	colors := moreland.Kindlmann() // Initialize a color map.
+	colors.SetMax(float64(j))
+	colors.SetMin(0)
+	scatter.GlyphStyleFunc = func(i int) draw.GlyphStyle {
+		hue := float64(i) / float64(j) * 360
+		c := colorful.Hsv(hue, 1, 1)
+		if i == 0 {
+			c = colorful.Hsv(hue, 0, 0)
+		}
+		return draw.GlyphStyle{Color: c, Radius: vg.Points(3), Shape: draw.CircleGlyph{}}
+	}
+	// fmt.Println(scatter.DataRange())
 	plt.Add(scatter)
 
-	plotter.DefaultGlyphStyle.Radius = 2
-	plotter.DefaultGlyphStyle.Color = color.RGBA{0, 100, 100, 0xff}
+	// plotter.DefaultGlyphStyle.Radius = 2
+	// plotter.DefaultGlyphStyle.Color = color.RGBA{0, 100, 100, 0xff}
 	scatter, err = plotter.NewScatter(plotter.XYs{{X: 0, Y: 0}})
 	if err != nil {
 		log.Panic(err)
 	}
 	plt.Add(scatter)
 
-	err = plt.Save(500, 500, "test.png")
+	err = plt.Save(500, 500, path)
 	if err != nil {
 		log.Panic(err)
 	}
 }
 
 func circle(i, j int, r, x, y *big.Rat) Complex {
-	one := big.NewRat(1, 1)
-	t := big.NewRat(int64(i), int64(j))
-	t.Mul(t, big.NewRat(2, 1))
-	t.Sub(t, one)
-	t2 := new(big.Rat).Mul(t, t)
-	t3 := new(big.Rat).Mul(t2, t)
-	t4 := new(big.Rat).Mul(t3, t)
-	denom := new(big.Rat).Add(t4, new(big.Rat).Mul(t2, big.NewRat(2, 1)))
-	denom.Add(denom, one)
-
-	realnumerator := new(big.Rat).Sub(t4, new(big.Rat).Mul(t2, big.NewRat(6, 1)))
-	realnumerator.Add(realnumerator, one)
-
-	imgaginarynumerator := new(big.Rat).Sub(new(big.Rat).Mul(t, big.NewRat(4, 1)), new(big.Rat).Mul(t3, big.NewRat(4, 1)))
-	// fmt.Println(t)
-	// fmt.Println(realnumerator, denom, imgaginarynumerator)
-	return Complex{new(big.Rat).Quo(realnumerator, denom), new(big.Rat).Quo(imgaginarynumerator, denom)}
+	real := new(big.Rat).SetFloat64(math.Cos(2 * math.Pi * float64(i) / float64(j)))
+	real.Mul(real, r)
+	real.Add(real, x)
+	imag := new(big.Rat).SetFloat64(math.Sin(2 * math.Pi * float64(i) / float64(j)))
+	imag.Mul(imag, r)
+	imag.Add(imag, y)
+	return Complex{real, imag}
 }
