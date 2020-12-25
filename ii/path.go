@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"log"
 	"math"
 	"math/big"
@@ -20,7 +19,7 @@ import (
 type Path func(int, int) Complex
 
 //Draw result of going along the path
-func (p Path) Draw(f EulerEquation, path string) {
+func (p Path) Draw(f EulerEquation, samples int, path string) {
 	plt, err := plot.New()
 	if err != nil {
 		log.Panic(err)
@@ -30,40 +29,28 @@ func (p Path) Draw(f EulerEquation, path string) {
 	plotter.DefaultGlyphStyle.Radius = vg.Points(1)
 	plt.X.Label.Text = "Real"
 	plt.Y.Label.Text = "Imaginary"
-	// plt.Y.Tick.Marker = plot.ConstantTicks([]plot.Tick{
-	// 	{Value: 0, Label: "0"}, {Value: 0.25, Label: ""}, {Value: 0.5, Label: "0.5"}, {Value: 0.75, Label: ""}, {Value: 1, Label: "1"},
-	// })
-	// plt.X.Tick.Marker = plot.ConstantTicks([]plot.Tick{
-	// 	{Value: 0, Label: "0"}, {Value: 0.25, Label: ""}, {Value: 0.5, Label: "0.5"}, {Value: 0.75, Label: ""}, {Value: 1, Label: "1"},
-	// })
 
-	j := 100
-	pts := make(plotter.XYs, j)
-	bar := pb.StartNew(j)
-	for i := 0; i < j; i++ {
-		val := f(p(i, j))
+	pts := make(plotter.XYs, samples)
+	bar := pb.StartNew(samples)
+	for i := 0; i < samples; i++ {
+		val := f(p(i, samples))
 		// val := p(i, j)
 
 		real, _ := val[0].Float64()
 		img, _ := val[1].Float64()
 		pts[i] = plotter.XY{X: real, Y: img}
-		if i == 0 {
-			fmt.Println(pts[i])
-		}
-		// pts = append(pts, plotter.XY{X: 1, Y: 1})
 		bar.Increment()
 	}
 	bar.Finish()
-	// fmt.Println(pts)
 	scatter, err := plotter.NewScatter(pts)
 	if err != nil {
 		log.Panic(err)
 	}
 	colors := moreland.Kindlmann() // Initialize a color map.
-	colors.SetMax(float64(j))
+	colors.SetMax(float64(samples))
 	colors.SetMin(0)
 	scatter.GlyphStyleFunc = func(i int) draw.GlyphStyle {
-		hue := float64(i) / float64(j) * 360
+		hue := float64(i) / float64(samples) * 360
 		c := colorful.Hsv(hue, 1, 1)
 		if i == 0 {
 			c = colorful.Hsv(hue, 0, 0)

@@ -29,7 +29,7 @@ func MakeEulerEquation(alpha *big.Rat, p Vector, q Vector, depth int64) EulerEqu
 		_, g := RationalFromContinued(negativeP)
 		return func(x Complex) Complex {
 			ans := *new(Complex).Add(f.ComplexCompute(x), g.ComplexCompute(x))
-			ans.Add(ans, new(Complex).Quo(p0, x))
+			ans.Add(ans, new(Complex).Quo(x, p0))
 			return ans
 		}
 	}

@@ -7,17 +7,24 @@ import (
 )
 
 func main() {
-	fmt.Println("hey world!")
-	f := MakeEulerEquation(big.NewRat(1, 1), Vector{big.NewRat(3, 1), big.NewRat(1, 1)}, Vector{big.NewRat(-1, 1), big.NewRat(2, 1)}, 101)
+	// f := MakeEulerEquation(big.NewRat(1, 1), Vector{big.NewRat(3, 1), big.NewRat(1, 1)}, Vector{big.NewRat(-1, 1), big.NewRat(1, 1)}, 201)
 
-	// f := MakeEulerEquation(big.NewRat(0, 1), Vector{big.NewRat(2, 1), big.NewRat(0, 1)}, Vector{big.NewRat(-1, 1), big.NewRat(-1, 1)}, 20)
-	aboutzero := f(Complex{big.NewRat(1539, 10), big.NewRat(0, 1)})
-	fmt.Println(aboutzero[0].FloatString(5), aboutzero[1].FloatString(3))
+	// f := MakeEulerEquation(big.NewRat(1, 1), Vector{big.NewRat(3, 1), big.NewRat(1, 1)}, Vector{big.NewRat(-1, 1), big.NewRat(2, 1)}, 10)
+
+	f := MakeEulerEquation(big.NewRat(0, 1), Vector{big.NewRat(2, 1), big.NewRat(0, 1)}, Vector{big.NewRat(-1, 1), big.NewRat(-1, 1)}, 120)
+
+	point := Complex{big.NewRat(1, 10), big.NewRat(0, 1)}
+	// point := Complex{big.NewRat(1538, 1000), big.NewRat(0, 1)}
+	fmt.Println("point:", point[0].FloatString(3), point[1].FloatString(3))
+	aboutzero := f(point)
+	fmt.Println("val:", aboutzero[0].FloatString(3), aboutzero[1].FloatString(3))
+
 	// p := Path(func(i, j int) Complex {
 	// 	return circle(i, j, big.NewRat(1, 1), big.NewRat(0, 1), big.NewRat(0, 1))
 	// })
+
 	p := Path(func(i, j int) Complex {
-		a, b, theta := 0.2, 10.0, math.Pi/20
+		a, b, theta := 1.0, 10.0, math.Pi/20
 		acircle, bcircle, line := a*(math.Pi-2*theta), b*(math.Pi-2*theta), (b - a)
 		len := acircle + bcircle + 2*line
 		position := float64(i) / float64(j) * len
@@ -49,10 +56,12 @@ func main() {
 		imag := t*b*math.Sin(angle) + (1-t)*a*math.Sin(angle)
 		return Complex{new(big.Rat).SetFloat64(real), new(big.Rat).SetFloat64(imag)}
 	})
-	p.Draw(f, "_result.png")
+	samples := 1000
+	p.Draw(f, samples, "_result.png")
 	p.Draw(func(x Complex) Complex {
 		return x
-	}, "_contour.png")
+	}, samples, "_contour.png")
+
 }
 
 func getCase(p, q Vector) string {

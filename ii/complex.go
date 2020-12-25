@@ -51,3 +51,8 @@ func (c *Complex) Equals(b Complex) bool {
 	}
 	return true
 }
+
+//ToString returns a string representation of the complex number to 3 decimal points
+func (c Complex) ToString() string {
+	return "<" + c[0].FloatString(3) + ", " + c[1].FloatString(3) + ">"
+}
