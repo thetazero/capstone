@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Case II</title>
+  <link rel="stylesheet" href="https://thetazero.github.io/style.css">
+  <link rel="stylesheet" href="style.css">
+
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.css"
+    integrity="sha384-AfEj0r4/OFrOo5t7NnNe46zW/tFgW6x/bCJG8FqQCEo3+Aro6EYUG4+cU+KJWu/X" crossorigin="anonymous">
+
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.js"
+    integrity="sha384-g7c+Jr9ZivxKLnZTDUhnkOnsh30B4H0rpLUpJ4jAIKs4fnJI+sEnkvrMWph2EDg4"
+    crossorigin="anonymous"></script>
+
+  <script>
+    function autoRender() {
+      renderMathInElement(document.body.querySelector('.container'));
+    }
+  </script>
+  <!-- To automatically render math in text elements, include the auto-render extension: -->
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/contrib/auto-render.min.js"
+    integrity="sha384-mll67QQFJfxn0IYznZYonOWZ644AWYC+Pt2cHqMaRhXVrursRwvLnLaebdGIlYNa" crossorigin="anonymous"
+    onload="autoRender()"></script>
+</head>
+
+<body>
+  <nav>
+    <ul>
+      <li><a href=".">Home</a></li>
+      <li><a href="euler">α-Euler</a></li>
+      <li><a href="navier-stokes">Navier-Stokes</a></li>
+      <li><a href="ii">Case II</a></li>
+    </ul>
+  </nav>
+  <div class="container">
+    <h1>Case II</h1>
+    <hr>
+    <img src="imgs/input_contour.png">
+    <p>
+      Given the countour above, a few examples of f(λ) where λ follows this countour in a counterclockwise manner are
+      shown below.
+      One can tell the direction of the graph traveling along the countour from Red to Green To Blue with the white dot
+      as the starting point.
+    </p>
+    <p>
+      p=[2, 0] q[-1,-1] α=1 at depth=51
+    </p>
+    <img src="imgs/contour_20-m1m1-1-51.png">
+    <p>We see that at depth=51, the winding number is one.</p>
+    <p>
+      p=[2, 0] q[-1,-1] α=1 at depth=51
+    </p>
+    <img src="imgs/contour_20-m1m1-1-51.png">
+    <p>
+      The results are nearly indenticle at depth=50, which is a good (non rigorous) indicator that higher depths should
+      change things in more insignificant ways.
+    </p>
+    <p>
+      p=[2, 0] q[-1,-1] α=1 at depth=9
+    </p>
+    <img src="imgs/contour_20-m1m1-1-9.png">
+    <p>
+      However at depth=9 we get more beautifully incoherent results. It converges to somethign similar to depth=50 at around 40.
+    </p>
+  </div>
+  <script src="https://cdn.jsdelivr.net/npm/mathjs@7.6.0/dist/math.min.js"></script>
+  <script src="ii.js"></script>
+</body>
+
+</html>

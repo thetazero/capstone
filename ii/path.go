@@ -29,6 +29,15 @@ func (p Path) Draw(f EulerEquation, samples int, path string) {
 	plotter.DefaultGlyphStyle.Radius = vg.Points(1)
 	plt.X.Label.Text = "Real"
 	plt.Y.Label.Text = "Imaginary"
+	plt.BackgroundColor = colorful.Hsv(0, 0, .1)
+	plt.X.Label.TextStyle.Color = colorful.Hsv(0, 0, 1)
+	plt.X.Color = colorful.Hsv(0, 0, 1)
+	plt.X.Tick.Color = colorful.Hsv(0, 0, 1)
+	plt.X.Tick.Label.Color = colorful.Hsv(0, 0, 1)
+	plt.Y.Label.TextStyle.Color = colorful.Hsv(0, 0, 1)
+	plt.Y.Color = colorful.Hsv(0, 0, 1)
+	plt.Y.Tick.Color = colorful.Hsv(0, 0, 1)
+	plt.Y.Tick.Label.Color = colorful.Hsv(0, 0, 1)
 
 	pts := make(plotter.XYs, samples)
 	bar := pb.StartNew(samples)
@@ -52,17 +61,20 @@ func (p Path) Draw(f EulerEquation, samples int, path string) {
 	scatter.GlyphStyleFunc = func(i int) draw.GlyphStyle {
 		hue := float64(i) / float64(samples) * 360
 		c := colorful.Hsv(hue, 1, 1)
-		if i == 0 {
-			c = colorful.Hsv(hue, 0, 0)
-		}
 		return draw.GlyphStyle{Color: c, Radius: vg.Points(3), Shape: draw.CircleGlyph{}}
 	}
 	// fmt.Println(scatter.DataRange())
 	plt.Add(scatter)
 
+	//set start point to white
+	scatter, err = plotter.NewScatter(plotter.XYs{pts[0]})
+	scatter.GlyphStyle = draw.GlyphStyle{Color: colorful.Hsl(0, 0, 1), Radius: vg.Points(3), Shape: draw.CircleGlyph{}}
+	plt.Add(scatter)
+
 	// plotter.DefaultGlyphStyle.Radius = 2
 	// plotter.DefaultGlyphStyle.Color = color.RGBA{0, 100, 100, 0xff}
 	scatter, err = plotter.NewScatter(plotter.XYs{{X: 0, Y: 0}})
+	scatter.GlyphStyle.Color = colorful.Hsv(0, 0, 1)
 	if err != nil {
 		log.Panic(err)
 	}
