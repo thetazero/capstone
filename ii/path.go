@@ -4,6 +4,7 @@ import (
 	"log"
 	"math"
 	"math/big"
+	"strconv"
 
 	"github.com/cheggaaa/pb"
 	"github.com/lucasb-eyer/go-colorful"
@@ -19,7 +20,7 @@ import (
 type Path func(int, int) Complex
 
 //Draw result of going along the path
-func (p Path) Draw(f EulerEquation, samples int, path string) {
+func (p Path) Draw(f EulerEquation, samples int, path string, wind bool) {
 	plt, err := plot.New()
 	if err != nil {
 		log.Panic(err)
@@ -51,6 +52,12 @@ func (p Path) Draw(f EulerEquation, samples int, path string) {
 		bar.Increment()
 	}
 	bar.Finish()
+
+	if wind {
+		w := winding(pts)
+		plt.Title.Text = "Winding: " + strconv.Itoa(w)
+		plt.Title.TextStyle.Color = colorful.Hsv(0, 0, 1)
+	}
 	scatter, err := plotter.NewScatter(pts)
 	if err != nil {
 		log.Panic(err)
@@ -94,4 +101,45 @@ func circle(i, j int, r, x, y *big.Rat) Complex {
 	imag.Mul(imag, r)
 	imag.Add(imag, y)
 	return Complex{real, imag}
+}
+
+//make square with width=2, upper left corner=<x,yi>
+func square(i, j int, w, x, y *big.Rat) Complex {
+	if j%4 != 0 {
+		panic("i%4 must equal zero")
+	}
+	c := Complex{x, y}
+	zero := big.NewRat(0, 1)
+	step := (j + 1) / 4
+	if i < step {
+		c.Sub(c, Complex{zero, new(big.Rat).Mul(w, big.NewRat(int64(i), int64(step)))})
+	} else if i < 2*step {
+		i -= step
+		c.Sub(c, Complex{new(big.Rat).Mul(new(big.Rat).Mul(w, big.NewRat(-1, 1)), big.NewRat(int64(i), int64(step))), w})
+	} else if i < 3*step {
+		i -= step * 2
+		c.Add(c, Complex{w, zero})
+		c.Sub(c, Complex{zero, w})
+		c.Add(c, Complex{zero, new(big.Rat).Mul(w, big.NewRat(int64(i), int64(step)))})
+	} else {
+		i -= step * 3
+		c.Add(c, Complex{w, zero})
+		c.Sub(c, Complex{new(big.Rat).Mul(w, big.NewRat(int64(i), int64(step))), zero})
+	}
+	return c
+}
+
+func winding(xys plotter.XYs) int {
+	sum := 0.0
+	last := math.Atan2(xys[0].Y, xys[0].X)
+	for _, xy := range xys {
+		cur := math.Atan2(xy.Y, xy.X)
+		dθ := cur - last
+		if dθ < -3 {
+			dθ = 2*math.Pi + cur - last
+		}
+		sum += dθ
+		last = cur
+	}
+	return int(math.Round(sum / math.Pi / 2))
 }
