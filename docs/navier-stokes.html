@@ -49,11 +49,14 @@
       $$a_{0}(\lambda, \nu)+f(\lambda, \nu)+g(\lambda, \nu)$$
     </div>
     <p>
-      Type in the inputs into the text boxes bellow, for ν just type in a number. For p and q type in a vector in
-      this form [1, 2]. Depth determines the depth to which the continued fractions are approximated.
+      The intersection of the white curve with the real-axis gives the unstable real Eigen value to the linearized navier-stokes equation.
     </p>
     <p>
-      <b>ν:</b><input type="text" id="nu-input" placeholder="ν" value="1">
+      To produce curves type in the inputs into the text boxes bellow then press solve. For ν just type in a number. For p and q type in a vector in
+      this form [1, 2]. Depth determines the depth to which the continued fractions are approximated. 
+    </p>
+    <p>
+      <b>ν:</b><input type="text" id="nu-input" placeholder="ν" value="0.03">
       <b>p:</b><input type="text" id="p" placeholder="p vector" value="[3, 1]" onkeyup="setPQ()">
       <b>q:</b><input type="text" id="q" placeholder="q vector" value="[-1, 2]" onkeyup="setPQ()">
       <b>depth:</b><input type="text" id="debth" placeholder="debth" value="10">

@@ -38,6 +38,35 @@
   <div class="container">
     <h1>Case II</h1>
     <hr>
+    <h2>Explanation</h2>
+    <p>
+      This page deals with Case II as described on the homepage, which results in the complex zeroes.
+      We apply the argument principle in order to obtain an approximate location of the zeroes. 
+      The argument principle states that for <a href="https://en.wikipedia.org/wiki/Meromorphic_function">meromorphic functions</a>
+    </p>
+    <div class="katex-container">
+      $$ \frac {1}{2\pi i} \oint _{C}{f'(z) \over f(z)}\,dz=Z-P $$
+    </div>
+    <img src="imgs/arg_principle.svg">
+    <p>
+      The left hand side is a countour integral in counter clockwise direction along a complex path (like the one shown in white). 
+      It evaluates to the number of counter clockwise revolutions around the origin that the output of \(f(z)\) has.
+      The argument principle states that this value equals the number of zeroes (Z/blue) minus the number of poles (P/red).
+      This means in this case the integral will evaluate to \(4-5=-1\)
+    </p>
+    <p>
+      In our case we approximate the function
+    </p>
+    <div class="katex-container">
+      $$F(\lambda)=\frac{\lambda}{\rho_{0}}+f(\lambda)+g(\lambda)=0$$
+    </div>
+    <p>
+      by approximating f(λ), g(λ) to a reasonable depth where increases of depth cause no noticable changes.
+      Then we plot many (about 1000) points along a countour in order to get a smooth curve. 
+      From the plot of F(λ) we can determine the winding number, and if it is positive we know there is at least one zero.
+      Then we contract the contour in order to locate the zero more precisely.
+    </p>
+    <h2>Example</h2>
     <img src="imgs/input_contour.png">
     <p>
       Given the contour above, a few examples of f(λ) where λ follows this contour in a counterclockwise manner are
@@ -46,19 +75,17 @@
       as the starting point.
     </p>
     <p>
-      The case p=[2, 0] q[-1,-1] α=1 is discussed below as an example
+      The case p=[2, 0] q[-1,-1] α=1 is discussed as an example. We approximate it at depth=51, however higher depths appear to cause no significant changes.
     </p>
     <img src="imgs/contour_20-m1m1-1-51.png">
-    <p>We see that at depth=51, the winding number is one.</p>
-    <img src="imgs/contour_20-m1m1-1-51.png">
-    <p>
-      The results are nearly identical at depth=50, which is a good (non rigorous) indicator that higher depths should
-      change things in insignificant ways.
-    </p>
     <h2>Zeroes</h2>
     <p>Given the source contour (left), a square with corners (0.7, 1.6) and (0.85, 1.45). And the resulting contour (right), approximated at depth=80.</p>
-    <img src="imgs/contour_zero.png">
+    <img src="imgs/input_1.000_[2.00000,0.00000]_[-1.00000,-1.00000].png">
     <img src="imgs/output_1.000_[2.00000,0.00000]_[-1.00000,-1.00000]80.png">
+    <hr>
+    <ul>
+      <li><a href="https://en.wikipedia.org/wiki/File:Argument_principle1.svg">Argument Principle Image (colors were tweaked)</a></li>
+    </ul>
   </div>
   <script src="https://cdn.jsdelivr.net/npm/mathjs@7.6.0/dist/math.min.js"></script>
   <script src="ii.js"></script>

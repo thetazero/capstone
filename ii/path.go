@@ -81,7 +81,9 @@ func (p Path) Draw(f EulerEquation, samples int, path string, wind bool) {
 	// plotter.DefaultGlyphStyle.Radius = 2
 	// plotter.DefaultGlyphStyle.Color = color.RGBA{0, 100, 100, 0xff}
 	scatter, err = plotter.NewScatter(plotter.XYs{{X: 0, Y: 0}})
+	scatter.GlyphStyle.Shape = draw.CircleGlyph{}
 	scatter.GlyphStyle.Color = colorful.Hsv(0, 0, 1)
+	scatter.GlyphStyle.Radius = 4
 	if err != nil {
 		log.Panic(err)
 	}
