@@ -41,50 +41,93 @@
     <h2>Explanation</h2>
     <p>
       This page deals with Case II as described on the homepage, which results in the complex zeroes.
-      We apply the argument principle in order to obtain an approximate location of the zeroes. 
-      The argument principle states that for <a href="https://en.wikipedia.org/wiki/Meromorphic_function">meromorphic functions</a>
+      We apply the argument principle in order to obtain an approximate location of the zeroes.
+      The argument principle states that for <a href="https://en.wikipedia.org/wiki/Meromorphic_function">meromorphic
+        functions</a>
     </p>
     <div class="katex-container">
       $$ \frac {1}{2\pi i} \oint _{C}{f'(z) \over f(z)}\,dz=Z-P $$
     </div>
     <img src="imgs/arg_principle.svg">
     <p>
-      The left hand side is a countour integral in counter clockwise direction along a complex path (like the one shown in white). 
+      The left hand side is a contour integral in counter clockwise direction along a complex path (like the one shown
+      in white).
       It evaluates to the number of counter clockwise revolutions around the origin that the output of \(f(z)\) has.
-      The argument principle states that this value equals the number of zeroes (Z/blue) minus the number of poles (P/red).
+      The argument principle states that this value equals the number of zeroes (Z/blue) minus the number of poles
+      (P/red).
       This means in this case the integral will evaluate to \(4-5=-1\)
     </p>
     <p>
       In our case we approximate the function
     </p>
     <div class="katex-container">
-      $$F(\lambda)=\frac{\lambda}{\rho_{0}}+f(\lambda)+g(\lambda)=0$$
+      $$F(\lambda)=\frac{\lambda}{\rho_{0}}+f(\lambda)+g(\lambda)$$
     </div>
     <p>
-      by approximating f(λ), g(λ) to a reasonable depth where increases of depth cause no noticable changes.
-      Then we plot many (about 1000) points along a countour in order to get a smooth curve. 
-      From the plot of F(λ) we can determine the winding number, and if it is positive we know there is at least one zero.
-      Then we contract the contour in order to locate the zero more precisely.
-    </p>
-    <h2>Example</h2>
-    <img src="imgs/input_contour.png">
-    <p>
-      Given the contour above, a few examples of f(λ) where λ follows this contour in a counterclockwise manner are
-      shown below.
-      One can tell the direction of the graph traveling along the contour from Red to Green To Blue with the white dot
-      as the starting point.
+      The zeroes of this function are the solutions to the α-Euler equation.
     </p>
     <p>
-      The case p=[2, 0] q[-1,-1] α=1 is discussed as an example. We approximate it at depth=51, however higher depths appear to cause no significant changes.
+      f(λ), g(λ) are approximated by continued fractions to a reasonable depth where increases of depth cause no
+      noticeable changes.
+      In order get the approximate location of zeroes, a grid of contours is constructed, and the winding number for
+      each contour is calculated by sampling many points.
+      Contours with winding numbers greater than one must have at least one zero, and are investigated further
+      recursively up to a fixed depth.
+      They are investigated by splitting up the contour into a new grid of contours, and repeating the previously
+      described process.
+      This allows one to obtain a relatively small contour in which a zero must be located.
     </p>
-    <img src="imgs/contour_20-m1m1-1-51.png">
-    <h2>Zeroes</h2>
-    <p>Given the source contour (left), a square with corners (0.7, 1.6) and (0.85, 1.45). And the resulting contour (right), approximated at depth=80.</p>
-    <img src="imgs/input_1.000_[2.00000,0.00000]_[-1.00000,-1.00000].png">
-    <img src="imgs/output_1.000_[2.00000,0.00000]_[-1.00000,-1.00000]80.png">
+    <h2>Examples & Methods</h2>
+    <p>
+      The case p=[2, 0] q[-1,-1] α=1 is discussed as an example. A 7x7 square centered at \(0.1+0.1i\) is divided into
+      49 squares with side length one (the slight offset from the origin is intended to avoid (0,0) which cannot be
+      approximated using our method).
+      The winding number for each contour is calculated by sampling equidistant points along the contour and applying
+      F(λ) to each
+      point, then calculating how many times the output goes around the origin. However a few problems arise, if enough
+      points are not sampled, such contours may arise
+    </p>
+    <img src="imgs/ii/nonsense.png">
+    <p>
+      While the obvious solution is to sample more points, for certain contours the appropriate number of points would
+      take approximately an hour to calculate.
+      The middle ground solution used in the program is based on interval jumping.
+      The contour is parametrized with the function \(c(t)\) with integers from 1 to 100,000 then, the following process
+      occurs
+    </p>
+    <ol>
+      <li>\(step=0.01\)</li>
+      <li>\(t_0\)=1</li>
+      <li>\(Plot(F(c(t_0))\)</li>
+      <li>while \(t_0,\leq 100,000\)</li>
+      <li>&emsp;\(\Delta t=1\)</li>
+      <li>&emsp;while \(||F(c(t_0+\Delta t))-F(c(t_0))||\leq
+        step\)</li>
+      <li>&emsp;&emsp; \(\Delta t*=2\)</li>
+      <li>&emsp;\(t_0+=\Delta t/2\)</li>
+      <li>&emsp;\(Plot(F(c(t_0))\)</li>
+    </ol>
+    <p>
+      This method takes less than 5 minutes per high precision contour and produces consistently smooth results like the
+      one shown below
+    </p>
+    <img src="/imgs/ii/output_<-0.900, 1.100>⇒<0.100, 0.100>.png">
+    <p>
+      Suspicious countours are then further investigated by splitting the source square into a new 7x7 grid, then
+      applying the same method.
+      This produces a good bound on the location of zeroes. A few contours and there input squares (which give a bound
+      on the location of the zero) are listed below.
+    </p>
+    <p>&lt;-0.114, 0.457&gt; ⇒ &lt;0.029, 0.314&gt; : In this case, while the bounds may be small, the function still
+      takes large values along the contour</p>
+    <img src="imgs/zero_examples/output_<-0.114, 0.457>⇒<0.029, 0.314>.png">
+    <p>&lt;-0.829, 1.600&gt; ⇒ &lt;-0.686, 1.457&gt; : Here we see that the values along the countour are very small,
+      which leads to gaps in the plot due to the chosen "step" size. </p>
+    <img src="imgs/zero_examples/output_<-0.829, 1.600>⇒<-0.686, 1.457>.png">
     <hr>
     <ul>
-      <li><a href="https://en.wikipedia.org/wiki/File:Argument_principle1.svg">Argument Principle Image (colors were tweaked)</a></li>
+      <li><a href="https://en.wikipedia.org/wiki/File:Argument_principle1.svg">Argument Principle Image (colors were
+          tweaked)</a></li>
     </ul>
   </div>
   <script src="https://cdn.jsdelivr.net/npm/mathjs@7.6.0/dist/math.min.js"></script>
